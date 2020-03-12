@@ -30,3 +30,22 @@ if [ ! -f "${dico_test}" ]; then
   wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
 fi
 
+src_emb=data/wiki.${s}.vec
+if [ ! -f "${src_emb}" ]; then
+  EMB=$(basename -- "${src_emb}")
+  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/${EMB}" -P data/
+fi
+
+tgt_emb=data/wiki.${t}.vec
+if [ ! -f "${tgt_emb}" ]; then
+  EMB=$(basename -- "${tgt_emb}")
+  wget -c "https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/${EMB}" -P data/
+fi
+
+output=res/wiki.${s}-${t}.vec
+
+python3 align.py --src_emb "${src_emb}" --tgt_emb "${tgt_emb}" \
+  --dico_train "${dico_train}" --dico_test "${dico_test}" --output "${output}" \
+  --lr 25 --niter 10
+python3 eval.py --src_emb "${output}" --tgt_emb "${tgt_emb}" \
+  --dico_test "${dico_test}"

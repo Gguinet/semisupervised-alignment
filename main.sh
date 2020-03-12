@@ -6,7 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 
 set -e
-s1=${1:-es}
+s1=${1:-en}
 t1=${2:-it}
 
 s2=${1:-en}
