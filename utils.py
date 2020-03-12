@@ -10,7 +10,7 @@ import numpy as np
 import collections
 
 
-def load_vectors(fname, maxload=10000, norm=True, center=False, verbose=True):
+def load_vectors(fname, maxload=200000, norm=True, center=False, verbose=True):
     if verbose:
         print("Loading vectors from %s" % fname)
     fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')

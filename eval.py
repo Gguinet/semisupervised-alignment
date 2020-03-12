@@ -19,7 +19,7 @@ parser.add_argument('--center', action='store_true', help='whether to center emb
 parser.add_argument("--src_mat", type=str, default='', help="Load source alignment matrix. If none given, the aligment matrix is the identity.")
 parser.add_argument("--tgt_mat", type=str, default='', help="Load target alignment matrix. If none given, the aligment matrix is the identity.")
 parser.add_argument("--dico_test", type=str, default='', help="test dictionary")
-parser.add_argument("--maxload", type=int, default=10000)
+parser.add_argument("--maxload", type=int, default=200000)
 parser.add_argument("--nomatch", action='store_true', help="no exact match in lexicon")
 params = parser.parse_args()
 

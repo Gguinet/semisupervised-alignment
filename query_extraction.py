@@ -19,7 +19,7 @@ parser.add_argument("--dico_train", type=str, default='', help="Training diction
 parser.add_argument("--dico_valid", type=str, default='', help="Validation dictionary for training language")
 parser.add_argument("--dico_test", type=str, default='', help="Testing dictionary for final language")
 parser.add_argument("--nn_size", type=int, default=10, help="Number of nearest neighboors per query")
-parser.add_argument("--maxload", type=int, default=10000)
+parser.add_argument("--maxload", type=int, default=200000)
 params = parser.parse_args()
 
 ###### MAIN ######

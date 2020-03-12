@@ -26,7 +26,7 @@ parser.add_argument("--output", type=str, default='', help="where to save aligne
 parser.add_argument("--knn", type=int, default=10, help="number of nearest neighbors in RCSL/CSLS")
 parser.add_argument("--maxneg", type=int, default=10000, help="Maximum number of negatives for the Extended RCSLS")
 parser.add_argument("--maxsup", type=int, default=-1, help="Maximum number of training examples")
-parser.add_argument("--maxload", type=int, default=10000, help="Maximum number of loaded vectors")
+parser.add_argument("--maxload", type=int, default=200000, help="Maximum number of loaded vectors")
 
 parser.add_argument("--model", type=str, default="none", help="Set of constraints: spectral or none")
 parser.add_argument("--reg", type=float, default=0.0 , help='regularization parameters')

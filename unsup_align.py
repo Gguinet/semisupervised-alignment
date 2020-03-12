@@ -22,7 +22,7 @@ parser.add_argument('--bsz', default=500, type=int, help='Initial batch size')
 parser.add_argument('--lr', default=500., type=float, help='Learning rate')
 parser.add_argument('--nmax', default=10000, type=int, help='Vocabulary size for learning the alignment')
 parser.add_argument('--reg', default=0.05, type=float, help='Regularization parameter for sinkhorn')
-parser.add_argument("--maxload", type=int, default=10000, help="Maximum number of loaded vectors")
+parser.add_argument("--maxload", type=int, default=200000, help="Maximum number of loaded vectors")
 args = parser.parse_args()
 
 
