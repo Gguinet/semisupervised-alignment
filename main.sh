@@ -26,7 +26,7 @@ if [ ! -d alignement/round1/ ]; then
   mkdir -p alignement/round1;
 fi
 
-diif [ ! -d alignement/round2/ ]; then
+if [ ! -d alignement/round2/ ]; then
   mkdir -p alignement/round2;
 fi
 
