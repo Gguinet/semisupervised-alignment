@@ -22,6 +22,14 @@ if [ ! -d alignement/ ]; then
   mkdir -p alignement;
 fi
 
+if [ ! -d alignement/round1/ ]; then
+  mkdir -p alignement/round1;
+fi
+
+diif [ ! -d alignement/round2/ ]; then
+  mkdir -p alignement/round2;
+fi
+
 if [ ! -d res/ ]; then
   mkdir -p res;
 fi
@@ -29,6 +37,7 @@ fi
 if [ ! -d query/ ]; then
   mkdir -p query;
 fi
+
 
 dico_train=data/${s1}-${t1}.0-5000.txt
 if [ ! -f "${dico_train}" ]; then
@@ -81,14 +90,14 @@ output_tgt2=alignement/round2/${t2}.vec
 #  --dico_train "${dico_train}" --dico_test "${dico_test}" --output "${output}" \
 #  --lr 25 --niter 10
 
-python3 unsup_align.py --model_src "${src_emb1}" --model_tgt "${tgt_emb1}" 
-    --lexicon "${dico_train}" --output_src "${output_src1}" --output_tgt "${output_tgt1}"
+python3 unsup_align.py --model_src "${src_emb1}" --model_tgt "${tgt_emb1}" \
+    --lexicon "${dico_train}" --output_src "${output_src1}" --output_tgt "${output_tgt1}" 
   
-python3 unsup_align.py --model_src "${src_emb2}" --model_tgt "${tgt_emb2}" 
+python3 unsup_align.py --model_src "${src_emb2}" --model_tgt "${tgt_emb2}" \
     --lexicon "${dico_test}" --output_src "${output_src2}" --output_tgt "${output_tgt2}"  
 
-python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${output_tgt1}" 
-    --src_emb_test "${output_src2}" --tgt_emb_test "${output_tgt2}" --output_dir 'query/'
+python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${output_tgt1}" \
+    --src_emb_test "${output_src2}" --tgt_emb_test "${output_tgt2}" --output_dir 'query/' \
     --dico_train "${dico_train}" --dico_valid "${dico_valid}" --dico_test "${dico_test}"
     --nn_size 5
 
