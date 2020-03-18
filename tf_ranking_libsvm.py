@@ -150,10 +150,7 @@ def load_libsvm_data(path, list_size):
   total_docs = 0
   discarded_docs = 0
   with open(path, "rt") as f:
-    gogo=0
     for line in f:
-      print(gogo)
-      gogo+=1
       qid, features, label = _parse_line(line)
       if qid not in qid_to_index:
         # Create index and allocate space for a new query.
