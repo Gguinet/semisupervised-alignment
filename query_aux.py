@@ -52,12 +52,14 @@ def compute_binary_distance(x_src,
         else:
             query_coord=[]
         
+        #For the given traduction, the relevance is 2
         for j in lexicon[i]:
             
             line = svm_line(np.concatenate((x_tgt[j],query_coord),
-                                           axis=None),query_id,1)
+                                           axis=None),query_id,2)
             file.write(line)
         
+        #For the other nearest neighboors, the relevance is 1
         for j in nn_list[i]:
             
             if not j in lexicon[i]:
