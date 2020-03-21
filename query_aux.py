@@ -21,7 +21,7 @@ def compute_NN_list(x_src, x_tgt,idx_src,bsz=100,nn_size=10):
         scores = np.dot(x_tgt, x_src[idx_src[i:e]].T)
         ind=np.argpartition(scores, -nn_size,axis=0)[-nn_size:]
         for j in range(i, e):
-            nn_list[idx_src[j]] = list(ind[:,j - i][np.argsort(scores[:,j - i][ind[:,j - i]])])
+            nn_list[idx_src[j]] = list(ind[:,j - i][np.argsort(scores[:,j - i][ind[:,j - i]])])[::-1]
     return nn_list
 
 
@@ -31,14 +31,14 @@ def compute_binary_distance(x_src,
                             lexicon,
                             add_query=False,
                             bsz=100,
-                            nn_size=10):
+                            query_size=10):
     '''
     Use a 0-1 loss for queries construction and save svmlight file
     '''
     
     idx_src = list(lexicon.keys())
-    print("Expected query size: %d" % (nn_size*len(idx_src)))
-    nn_list = compute_NN_list(x_src,x_tgt,idx_src=idx_src,bsz=bsz, nn_size=nn_size)
+    print("Expected query size: %d" % (query_size*len(idx_src)))
+    nn_list = compute_NN_list(x_src,x_tgt,idx_src=idx_src,bsz=bsz, nn_size=query_size)
     
     query_id=0
     file = open(file_name,'wb')
@@ -46,6 +46,7 @@ def compute_binary_distance(x_src,
     file.truncate(0)
     
     for i in idx_src:
+
         
         if add_query==True:
             query_coord=x_src[i]
@@ -60,7 +61,8 @@ def compute_binary_distance(x_src,
             file.write(line)
         
         #For the other nearest neighboors, the relevance is 1
-        for j in nn_list[i]:
+        #We choose a fixed lenght of query size
+        for j in nn_list[i][:query_size-len(lexicon[i])]:
             
             if not j in lexicon[i]:
                 
@@ -79,14 +81,14 @@ def compute_binary_distance_df(x_src,
                                lexicon,
                                add_query=False,
                                bsz=100,
-                               nn_size=10):
+                               query_size=10):
     '''
     Use a 0-1 loss for queries construction and save svmlight file using dataframe
     Give faster loading of data in the pipeline
     '''
     idx_src = list(lexicon.keys())
-    print("Expected query size: %d" % (nn_size*len(idx_src)))
-    nn_list = compute_NN_list(x_src,x_tgt,idx_src=idx_src,bsz=bsz, nn_size=nn_size)
+    print("Expected query size: %d" % (query_size*len(idx_src)))
+    nn_list = compute_NN_list(x_src,x_tgt,idx_src=idx_src,bsz=bsz, nn_size=query_size)
     
     if add_query==True:
         feature_size=600
@@ -112,7 +114,7 @@ def compute_binary_distance_df(x_src,
             query_list.append(query_id)
             ind+=1
 
-        for j in nn_list[i]:
+        for j in nn_list[i][:query_size-len(lexicon[i])]:
             
             if not j in lexicon[i]:
                 

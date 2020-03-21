@@ -18,7 +18,7 @@ parser.add_argument('--center', action='store_true', help='whether to center emb
 parser.add_argument("--dico_train", type=str, default='', help="Training dictionary for training language")
 parser.add_argument("--dico_valid", type=str, default='', help="Validation dictionary for training language")
 parser.add_argument("--dico_test", type=str, default='', help="Testing dictionary for final language")
-parser.add_argument("--nn_size", type=int, default=10, help="Number of nearest neighboors per query")
+parser.add_argument("--query_size", type=int, default=10, help="Size of the query")
 parser.add_argument("--maxload", type=int, default=200000)
 params = parser.parse_args()
 
@@ -51,7 +51,7 @@ compute_binary_distance(x_src_train,
                         params.output_dir+"train",
                         src2tgt_train,
                         add_query=True,
-                        nn_size=params.nn_size)
+                        query_size=params.query_size)
 print("Training data extracted")
 
 print("Loading and extracting validation data")
@@ -61,7 +61,7 @@ compute_binary_distance(x_src_train,
                         params.output_dir+"valid",
                         src2tgt_valid,
                         add_query=True,
-                        nn_size=params.nn_size)
+                        query_size=params.query_size)
 print("Validation data extracted")
 
 print("Extraction of queries alignment on %s" % params.dico_test)
@@ -79,5 +79,5 @@ compute_binary_distance(x_src_test,
                         params.output_dir+"test",
                         src2tgt_test,
                         add_query=True,
-                        nn_size=params.nn_size)
+                        query_size=params.query_size)
 print("Testing data extracted")

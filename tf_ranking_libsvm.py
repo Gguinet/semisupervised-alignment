@@ -63,10 +63,10 @@ import six
 import tensorflow as tf
 import tensorflow_ranking as tfr
 
-flags.DEFINE_string("train_path", 'query/train', "Input file path used for training.")
-flags.DEFINE_string("vali_path", 'query/valid', "Input file path used for validation.")
-flags.DEFINE_string("test_path", 'query/test', "Input file path used for testing.")
-flags.DEFINE_string("output_dir", 'tf_res', "Output directory for models.")
+flags.DEFINE_string("train_path", None, "Input file path used for training.")
+flags.DEFINE_string("vali_path", None, "Input file path used for validation.")
+flags.DEFINE_string("test_path", None, "Input file path used for testing.")
+flags.DEFINE_string("output_dir", None, "Output directory for models.")
 
 flags.DEFINE_integer("train_batch_size", 32, "The batch size for training.")
 flags.DEFINE_integer("num_train_steps", 100000, "Number of steps for training.")
