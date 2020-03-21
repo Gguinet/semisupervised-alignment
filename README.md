@@ -9,7 +9,7 @@
 * Ubuntu, Version 18.04, 200 Go mémoire
 * Pare-feu: Autoriser traffic HTTPS et HTTP
 
-**Ligne de commande Python:**
+**Ligne de commande:**
 
 * sudo apt install python
 * sudo apt-get install python3-distutils
