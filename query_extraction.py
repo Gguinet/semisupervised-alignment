@@ -52,6 +52,13 @@ compute_binary_distance(x_src_train,
                         src2tgt_train,
                         add_query=True,
                         query_size=params.query_size)
+#compute_embedding_distance(x_src_train,
+#                           x_tgt_train,
+#                           params.output_dir+"train",
+#                           src2tgt_train,
+#                           add_query=True,
+#                           query_size=params.query_size)
+    
 print("Training data extracted")
 
 print("Loading and extracting validation data")
@@ -62,6 +69,12 @@ compute_binary_distance(x_src_train,
                         src2tgt_valid,
                         add_query=True,
                         query_size=params.query_size)
+#compute_embedding_distance(x_src_train,
+#                           x_tgt_train,
+#                           params.output_dir+"valid",
+#                           src2tgt_train,
+#                           add_query=True,
+#                           query_size=params.query_size)
 print("Validation data extracted")
 
 print("Extraction of queries alignment on %s" % params.dico_test)
@@ -80,4 +93,10 @@ compute_binary_distance(x_src_test,
                         src2tgt_test,
                         add_query=True,
                         query_size=params.query_size)
+#compute_embedding_distance(x_src_train,
+#                           x_tgt_train,
+#                           params.output_dir+"test",
+#                           src2tgt_train,
+#                           add_query=True,
+#                           query_size=params.query_size)
 print("Testing data extracted")

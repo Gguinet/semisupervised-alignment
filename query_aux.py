@@ -62,14 +62,67 @@ def compute_binary_distance(x_src,
         
         #For the other nearest neighboors, the relevance is 1
         #We choose a fixed lenght of query size
-        for j in nn_list[i][:query_size-len(lexicon[i])]:
+        others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
+
+        for j in others_neigh[:query_size-len(lexicon[i])]:
+
+            line = svm_line(np.concatenate((x_tgt[j],query_coord),
+                                       axis=None),query_id,1)
+            file.write(line)
             
-            if not j in lexicon[i]:
-                
-                line = svm_line(np.concatenate((x_tgt[j],query_coord),
-                                           axis=None),query_id,1)
-                file.write(line)
+        query_id+=1
+        
+    file.close()
+    
+def compute_embedding_distance(x_src,
+                               x_tgt,
+                               file_name,
+                               lexicon,
+                               add_query=False,
+                               bsz=100,
+                               query_size=10):
+    '''
+    Use a embedding loss for queries construction and save svmlight file.
+    More precisely, we use as score the maximum similarity with a given 
+    traduction of the considered word in terms of embeddings
+    '''
+    
+    idx_src = list(lexicon.keys())
+    print("Expected query size: %d" % (query_size*len(idx_src)))
+    nn_list = compute_NN_list(x_src,x_tgt,idx_src=idx_src,bsz=bsz, nn_size=query_size)
+    
+    query_id=0
+    file = open(file_name,'wb')
+    # wb means we are writting in binary
+    file.truncate(0)
+    
+    
+    for i in idx_src:
+        
+        # We consider ground truth words and fill the remaining with neighboors
+        target = list(lexicon[i])
+        others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
+        query_list = target + others_neigh[:query_size-len(lexicon[i])]
+
+        score=np.dot(x_tgt[query_list], x_tgt[target].T).max(axis=1) 
+        #score=(score/score.min()).round().astype('int')
+        sorted_score = sorted(score)
+
+        
+        if add_query==True:
+            query_coord=x_src[i]
+        else:
+            query_coord=[]
+
+        for k,j in enumerate(query_list):
             
+            #The relevance is the ranking of the embedding distance to ground truth
+            relevance = sorted_score.index(score[k])
+
+            line = svm_line(np.concatenate((x_tgt[j],query_coord),
+                                           axis=None),query_id,relevance)
+            file.write(line)
+
         query_id+=1
         
     file.close()
