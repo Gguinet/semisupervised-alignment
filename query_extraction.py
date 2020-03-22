@@ -18,7 +18,7 @@ parser.add_argument('--center', action='store_true', help='whether to center emb
 parser.add_argument("--dico_train", type=str, default='', help="Training dictionary for training language")
 parser.add_argument("--dico_valid", type=str, default='', help="Validation dictionary for training language")
 parser.add_argument("--dico_test", type=str, default='', help="Testing dictionary for final language")
-parrser.add_argument("--query_extractor", type=str, default='', help="Type of query relevance: binary or continuous")
+parser.add_argument("--query_extractor", type=str, default='', help="Type of query relevance: binary or continuous")
 parser.add_argument("--query_size", type=int, default=10, help="Size of the query")
 parser.add_argument("--maxload", type=int, default=10000)
 
