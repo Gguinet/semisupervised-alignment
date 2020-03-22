@@ -99,7 +99,7 @@ python3 unsup_align.py --model_src "${src_emb2}" --model_tgt "${tgt_emb2}" \
 python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${output_tgt1}" \
     --src_emb_test "${output_src2}" --tgt_emb_test "${output_tgt2}" --output_dir 'query/' \
     --dico_train "${dico_train}" --dico_valid "${dico_valid}" --dico_test "${dico_test}" \
-    --query_size 10
+    --query_size 10 --query_extractor 'binary'
 
 python3 tf_ranking_libsvm.py --train_path 'query/train' --vali_path 'query/valid' \
     --test_path 'query/test' --output_dir 'tf_res' --group_size 1 --loss "approx_ndcg_loss" \
