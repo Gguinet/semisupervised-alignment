@@ -103,4 +103,4 @@ python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${
 
 #python3 tf_ranking_libsvm.py --train_path 'query/train' --vali_path 'query/valid' \
 #    --test_path 'query/test' --output_dir 'tf_res' --group_size 1 --loss "approx_ndcg_loss" \
-#    --num_train_steps 100000
+#    --num_train_steps 100000 --query_extraction 'binary' --query_size 10

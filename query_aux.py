@@ -117,7 +117,13 @@ def compute_embedding_distance(x_src,
         for k,j in enumerate(query_list):
             
             #The relevance is the ranking of the embedding distance to ground truth
-            relevance = sorted_score.index(score[k])
+            if score[k] >= 0.9:
+                
+                relevance = query_size
+                
+            else:
+                
+                relevance = sorted_score.index(score[k]) + 1
 
             line = svm_line(np.concatenate((x_tgt[j],query_coord),
                                            axis=None),query_id,relevance)
