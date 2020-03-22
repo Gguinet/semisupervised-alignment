@@ -36,7 +36,18 @@ python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${
 
 python3 tf_ranking_libsvm.py --train_path 'query/train' --vali_path 'query/valid' \
     --test_path 'query/test' --output_dir 'tf_res' --group_size 1 --loss "approx_ndcg_loss" \
-    --num_train_steps 100000 --query_extraction 'binary' --query_size 10
+    --num_train_steps 100000 --query_extractor 'binary' --query_size 10
+```
+
+**Faire des modifications depuis le terminal gcloud:**
+
+```
+vim main.sh (ouvre le fichier avec vim en mode lecture)
+i (passe en mode édition pour faire les corrections nécessaires depuis le terminal)
+echap (quitte le mode édition)
+:w (enregistre le fichier)
+:q (quitte le fichier)
+
 ```
 
 **Loss functions:**

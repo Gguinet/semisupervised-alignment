@@ -68,7 +68,7 @@ flags.DEFINE_string("train_path", None, "Input file path used for training.")
 flags.DEFINE_string("vali_path", None, "Input file path used for validation.")
 flags.DEFINE_string("test_path", None, "Input file path used for testing.")
 flags.DEFINE_string("output_dir", None, "Output directory for models.")
-flags.DEFINE_string("query_extraction", 'binary', "Type of relevance for the queries, binary ou continuous.")
+flags.DEFINE_string("query_extractor", 'binary', "Type of relevance for the queries, binary ou continuous.")
 flags.DEFINE_string("query_size", 10, "Number of words per query.")
 
 flags.DEFINE_integer("train_batch_size", 32, "The batch size for training.")
@@ -488,7 +488,7 @@ def _prepare_and_validate_params(labels, predictions, weights=None, topn=None):
   return labels, predictions, example_weights, topn
 
 # We need the relevance of the correct vocabulary
-if flags.query_extraction == 'binary':
+if flags.query_extractor == 'binary':
     ground_truth = 1
 else:
     ground_truth = flags.query_size
