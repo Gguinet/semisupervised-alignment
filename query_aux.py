@@ -57,7 +57,7 @@ def compute_binary_distance(x_src,
         for j in lexicon[i]:
             
             line = svm_line(np.concatenate((x_tgt[j],query_coord),
-                                           axis=None),query_id,2)
+                                           axis=None),query_id,1)
             file.write(line)
         
         #For the other nearest neighboors, the relevance is 1
@@ -67,7 +67,7 @@ def compute_binary_distance(x_src,
         for j in others_neigh[:query_size-len(lexicon[i])]:
 
             line = svm_line(np.concatenate((x_tgt[j],query_coord),
-                                       axis=None),query_id,1)
+                                       axis=None),query_id,0)
             file.write(line)
             
         query_id+=1
