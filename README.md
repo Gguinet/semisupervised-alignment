@@ -32,14 +32,15 @@ sh main.sh
 python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${output_tgt1}" \
     --src_emb_test "${output_src2}" --tgt_emb_test "${output_tgt2}" --output_dir 'query/' \
     --dico_train "${dico_train}" --dico_valid "${dico_valid}" --dico_test "${dico_test}" \
-    --query_size 10 --query_extractor 'binary'
+    --query_size 10 --query_relevance_type 'binary' --add_csls_coord false \
+    --k_csls 10 --add_word_coord false --add_query_coord false 
 
 python3 tf_ranking_libsvm.py --train_path 'query/train' --vali_path 'query/valid' \
     --test_path 'query/test' --output_dir 'tf_res' --group_size 1 --loss "approx_ndcg_loss" \
-    --num_train_steps 100000 --query_extractor 'binary' --query_size 10
+    --num_train_steps 100000 --query_relevance_type 'binary' --query_size 10
 ```
 
-**Faire des modifications depuis le terminal gcloud:**
+**Faire des modifications depuis le terminal gcloud (VIM):**
 
 ```
 vim main.sh (ouvre le fichier avec vim en mode lecture)
@@ -47,7 +48,6 @@ i (passe en mode édition pour faire les corrections nécessaires depuis le term
 echap (quitte le mode édition)
 :w (enregistre le fichier)
 :q (quitte le fichier)
-
 ```
 
 **Loss functions:**
@@ -69,6 +69,7 @@ echap (quitte le mode édition)
 
 * Triplets of languages 
 * Loss functions
-* Query extractor: binary or continuous
+* Query Relevance Type: binary or continuous
+* Coordinate System (CSLS, NN, word or query embeddings...)
 * Size of queries
 * Group Size: Try first 2 instead of 1 (exponential growth)

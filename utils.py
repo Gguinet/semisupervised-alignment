@@ -145,6 +145,56 @@ def compute_csls_accuracy(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024
         dotprod = np.partition(sc_batch, -k, axis=1)[:, -k:]
         sc2[i:j] = np.mean(dotprod, axis=1)
     similarities -= sc2[np.newaxis, :]
+    
+    ##We compute to x_src penaly
+    #x_src_penalty = np.zeros(sr.shape[0])
+    #for i in range(0, sr.shape[0], bsz):
+    #    j = min(i + bsz, sr.shape[0])
+    #    sc_batch = np.dot(sr[i:j, :], x_tgt.T)
+    #    dotprod = np.partition(sc_batch, -k, axis=1)[:, -k:]
+    #    x_src_penalty[i:j] = np.mean(dotprod, axis=1)
+    #similarities -= x_src_penalty[:,np.newaxis]
+
+    nn = np.argmax(similarities, axis=1).tolist()
+    correct = 0.0
+    for k in range(0, len(lexicon)):
+        if nn[k] in lexicon[idx_src[k]]:
+            correct += 1.0
+    return correct / lexicon_size
+
+def compute_csls_accuracy_bis(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
+    '''
+    Corrected version of csls with tgt and src penalty 
+    '''
+    
+    if lexicon_size < 0:
+        lexicon_size = len(lexicon)
+    idx_src = list(lexicon.keys())
+
+    x_src /= np.linalg.norm(x_src, axis=1)[:, np.newaxis] + 1e-8
+    x_tgt /= np.linalg.norm(x_tgt, axis=1)[:, np.newaxis] + 1e-8
+
+    sr = x_src[list(idx_src)]
+    sc = np.dot(sr, x_tgt.T)
+    similarities = 2 * sc
+
+    #We compute x_tgt penaly 
+    x_tgt_penalty = np.zeros(x_tgt.shape[0])
+    for i in range(0, x_tgt.shape[0], bsz):
+        j = min(i + bsz, x_tgt.shape[0])
+        sc_batch = np.dot(x_tgt[i:j, :], x_src.T)
+        dotprod = np.partition(sc_batch, -k, axis=1)[:, -k:]
+        x_tgt_penalty[i:j] = np.mean(dotprod, axis=1)
+    similarities -= x_tgt_penalty[np.newaxis, :]
+    
+    #We compute x_src 
+    x_src_penalty = np.zeros(sr.shape[0])
+    for i in range(0, sr.shape[0], bsz):
+        j = min(i + bsz, sr.shape[0])
+        sc_batch = np.dot(sr[i:j, :], x_tgt.T)
+        dotprod = np.partition(sc_batch, -k, axis=1)[:, -k:]
+        x_src_penalty[i:j] = np.mean(dotprod, axis=1)
+    similarities -= x_src_penalty[np.newaxis, :]
 
     nn = np.argmax(similarities, axis=1).tolist()
     correct = 0.0

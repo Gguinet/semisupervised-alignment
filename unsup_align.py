@@ -101,7 +101,8 @@ print("Done [%03d sec]" % math.floor(time.time() - t0))
 print("Accuracy on 0-5000 dictionnary:")
 nnacc = compute_nn_accuracy(x_src, np.dot(x_tgt, R.T), src2tgt, lexicon_size=lexicon_size)
 cslsproc = compute_csls_accuracy(x_src, np.dot(x_tgt, R.T), src2tgt, lexicon_size=lexicon_size)
-print("\nNN = %.4f - CSLS = %.4f - Coverage = %.4f" % (nnacc, cslsproc, len(src2tgt) / lexicon_size))
+cslsbis = compute_csls_accuracy_bis(x_src, np.dot(x_tgt, R.T), src2tgt, lexicon_size=lexicon_size)
+print("\nNN = %.4f - CSLS = %.4f - CSLS Corrected= %.4f - Coverage = %.4f" % (nnacc, cslsproc,cslsbis, len(src2tgt) / lexicon_size))
 
 if args.output_src != '':
     x_src = x_src / np.linalg.norm(x_src, 2, 1).reshape([-1, 1])
