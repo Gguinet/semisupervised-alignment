@@ -69,8 +69,8 @@ flags.DEFINE_string("vali_path", None, "Input file path used for validation.")
 flags.DEFINE_string("test_path", None, "Input file path used for testing.")
 flags.DEFINE_string("output_dir", None, "Output directory for models.")
 flags.DEFINE_string("query_relevance_type", 'binary', "Type of relevance for the queries, binary ou continuous.")
-flags.DEFINE_string("query_size", 10, "Number of words per query.")
 
+flags.DEFINE_integer("query_size", 10, "Number of words per query.")
 flags.DEFINE_integer("train_batch_size", 32, "The batch size for training.")
 flags.DEFINE_integer("num_train_steps", 100000, "Number of steps for training.")
 
@@ -487,12 +487,6 @@ def _prepare_and_validate_params(labels, predictions, weights=None, topn=None):
       tf.reduce_min(input_tensor=predictions, axis=1, keepdims=True))
   return labels, predictions, example_weights, topn
 
-# We need the relevance of the correct vocabulary
-if flags.query_relevance_type == 'binary':
-    ground_truth = 2
-else:
-    ground_truth = flags.query_size
-
 def bilingual_lexical_induction(labels,
                                 predictions,
                                 features):
@@ -512,6 +506,12 @@ def bilingual_lexical_induction(labels,
   labels, predictions, weights,_ = _prepare_and_validate_params(
         labels, predictions, weights)
   sorted_labels = utils.sort_by_scores(predictions, [labels])[0]
+    
+  # We need the relevance of the correct vocabulary
+  if FLAGS.query_relevance_type == 'binary':
+    ground_truth = 2
+  else:
+    ground_truth = FLAGS.query_size
   # Relevance = 1.0 when labels = ground_truth
   relevance = tf.cast(tf.equal(sorted_labels, ground_truth), dtype=tf.float32)
   #We only consider the first suggestion [:,0] and BLI has a shape of [batch_size, 1].
@@ -521,7 +521,6 @@ def bilingual_lexical_induction(labels,
         weights=weights,
         relevance=tf.cast(tf.greater_equal(labels, 1.0), dtype=tf.float32))
   return tf.compat.v1.metrics.mean(bli, per_list_weights)
-
 
 def get_eval_metric_fns():
   """Returns a dict from name to metric functions."""

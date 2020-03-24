@@ -7,6 +7,17 @@ import argparse
 from utils import *
 from query_aux import *
 
+#to use bool for parsing
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 parser = argparse.ArgumentParser(description='Extraction of queries from source, training and target language')
 parser.add_argument("--src_emb_train", type=str, default='', help="Load source embeddings for training")
 parser.add_argument("--tgt_emb_train", type=str, default='', help="Load target embeddings for validation")
@@ -21,11 +32,10 @@ parser.add_argument("--maxload", type=int, default=200000)
 
 parser.add_argument("--query_relevance_type", type=str, default='', help="Type of query relevance: binary or continuous")
 parser.add_argument("--query_size", type=int, default=10, help="Size of the query")
-parser.add_argument("--add_csls_coord", type=bool, default=True, help="Whether to add to query coord CSLS distance")
+parser.add_argument("--add_csls_coord", type=str2bool, default=True, help="Whether to add to query coord CSLS distance")
 parser.add_argument('--k_csls', type=int,default=10, help='Number of coord in query for CSLS distance (from 0 to k)')
-parser.add_argument("--add_word_coord", type=bool, default=True, help="Whether to add to query coord word embedding")
-parser.add_argument("--add_query_coord", type=bool, default=True, help="Whether to add to query coord query word embedding")
-
+parser.add_argument("--add_word_coord", type=str2bool, default=True, help="Whether to add to query coord word embedding")
+parser.add_argument("--add_query_coord", type=str2bool, default=True, help="Whether to add to query coord query word embedding")
 
 params = parser.parse_args()
 
@@ -70,7 +80,7 @@ print("Loading and extracting validation data")
 src2tgt_valid, lexicon_size = load_lexicon(params.dico_valid, words_src_train, words_tgt_train)
 query_extractor(x_src_train,
                 x_tgt_train,
-                params.output_dir+"train",
+                params.output_dir+"valid",
                 src2tgt_valid,
                 add_csls_coord=params.add_csls_coord,
                 k_csls=params.k_csls,
