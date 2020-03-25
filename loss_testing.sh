@@ -1,4 +1,4 @@
- #!/bin/usr/env sh
+#!/bin/usr/env sh
 # Copyright (c) 2018-present, Facebook, Inc.
 # All rights reserved.
 #
@@ -38,8 +38,8 @@ if [ ! -d res/binary/ ]; then
   mkdir -p res/binary;
 fi
 
-if [ ! -d res/countinuous/ ]; then
-  mkdir -p res/countinuous;
+if [ ! -d res/continuous/ ]; then
+  mkdir -p res/continuous;
 fi
 
 if [ ! -d query_binary/ ]; then
