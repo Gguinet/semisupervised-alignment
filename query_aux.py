@@ -37,7 +37,7 @@ def compute_csls_coord(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
 
     sr = x_src[list(idx_src)]
     
-    similarities = 2 * np.dot(sr, x_tgt.T)
+    #similarities = 2 * np.dot(sr, x_tgt.T)
 
     #We compute x_tgt penaly for k steps of nn
     x_tgt_penalty = np.zeros((x_tgt.shape[0],k))
@@ -64,7 +64,8 @@ def compute_csls_coord(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
     #similarities -= x_src_penalty[:,np.newaxis]
     #similarities -= x_tgt_penalty[np.newaxis, :]
 
-    return similarities,x_src_penalty,x_tgt_penalty
+    #return similarities,x_src_penalty,x_tgt_penalty
+    return x_src_penalty,x_tgt_penalty
 
 
     
@@ -95,12 +96,12 @@ def compute_embedding_distance(x_src,
     
     if add_csls_coord ==True:
         
-        similarities,x_src_penalty,x_tgt_penalty = compute_csls_coord(x_src,
-                                                                      x_tgt,
-                                                                      lexicon,
-                                                                      lexicon_size=-1,
-                                                                      k=k_csls,
-                                                                      bsz=1024)
+        x_src_penalty,x_tgt_penalty = compute_csls_coord(x_src,
+                                                         x_tgt,
+                                                         lexicon,
+                                                         lexicon_size=-1,
+                                                         k=k_csls,
+                                                         bsz=1024)
     
     for ind_src,i in enumerate(idx_src):
         
@@ -121,11 +122,12 @@ def compute_embedding_distance(x_src,
             
             if add_csls_coord == True:
                 
+                similarity = np.dot(x_src[i],x_tgt[j].T)
                 #We append NN similarity
-                total_coord.append(similarities[ind_src,j])
+                total_coord.append(similarity)
                 #We append k CSLS similarity
                 total_coord = np.concatenate((total_coord,
-                                              similarities[ind_src,j]-x_src_penalty[ind_src,:]-x_tgt_penalty[j,:]),
+                                              similarity-x_src_penalty[ind_src,:]-x_tgt_penalty[j,:]),
                                            axis=None)
 
             if add_word_coord == True:
@@ -190,12 +192,12 @@ def compute_binary_distance(x_src,
     
     if add_csls_coord ==True:
         
-        similarities,x_src_penalty,x_tgt_penalty = compute_csls_coord(x_src,
-                                                                      x_tgt,
-                                                                      lexicon,
-                                                                      lexicon_size=-1,
-                                                                      k=k_csls,
-                                                                      bsz=1024)
+        x_src_penalty,x_tgt_penalty = compute_csls_coord(x_src,
+                                                         x_tgt,
+                                                         lexicon,
+                                                         lexicon_size=-1,
+                                                         k=k_csls,
+                                                         bsz=1024)
     
     for ind_src,i in enumerate(idx_src):
         
@@ -212,11 +214,12 @@ def compute_binary_distance(x_src,
             
             if add_csls_coord == True:
                 
+                similarity = np.dot(x_src[i],x_tgt[j].T)
                 #We append NN similarity
-                total_coord.append(similarities[ind_src,j])
+                total_coord.append(similarity)
                 #We append k CSLS similarity
                 total_coord = np.concatenate((total_coord,
-                                              similarities[ind_src,j]-x_src_penalty[ind_src,:]-x_tgt_penalty[j,:]),
+                                              similarity-x_src_penalty[ind_src,:]-x_tgt_penalty[j,:]),
                                            axis=None)
 
             if add_word_coord == True:
