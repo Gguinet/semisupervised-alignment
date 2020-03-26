@@ -27,7 +27,7 @@ sh bli.sh en nl es
 sh bli.sh en et es
 
 #Finnish: fi
-#sh bli.sh en fi es
+sh bli.sh en "fi" es
 
 #French: fr
 sh bli.sh en fr es
@@ -87,7 +87,7 @@ sh bli.sh en tr es
 sh bli.sh en uk es
 
 #Vietnamese: vi
-#sh bli.sh en vi es
+sh bli.sh en "vi" es
 
 
 
@@ -120,7 +120,7 @@ sh bli.sh en nl fr
 sh bli.sh en et fr
 
 #Finnish: fi
-#sh bli.sh en fi es
+sh bli.sh en "fi" es
 
 #French: fr
 #sh bli.sh en fr es
@@ -180,7 +180,7 @@ sh bli.sh en tr fr
 sh bli.sh en uk fr
 
 #Vietnamese: vi
-#sh bli.sh en vi es
+sh bli.sh en "vi" es
 
 
 
@@ -214,7 +214,7 @@ sh bli.sh en nl de
 sh bli.sh en et de
 
 #Finnish: fi
-#sh bli.sh en fi es
+sh bli.sh en "fi" es
 
 #French: fr
 sh bli.sh en fr de
@@ -274,7 +274,7 @@ sh bli.sh en tr de
 sh bli.sh en uk de
 
 #Vietnamese: vi
-#sh bli.sh en vi es
+sh bli.sh en "vi" es
 
 
 
@@ -306,7 +306,7 @@ sh bli.sh en nl ru
 sh bli.sh en et ru
 
 #Finnish: fi
-#sh bli.sh en fi es
+sh bli.sh en "fi" es
 
 #French: fr
 sh bli.sh en fr ru
@@ -366,4 +366,4 @@ sh bli.sh en tr ru
 sh bli.sh en uk ru
 
 #Vietnamese: vi
-#sh bli.sh en vi es
+sh bli.sh en "vi" es
