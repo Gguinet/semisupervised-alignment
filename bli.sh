@@ -97,9 +97,9 @@ if [ ! -d alignement/${s2}-${t2}/ ]; then
 fi
 
 
-# Query Extraction
+# Query Extraction (full is used instead of train/test as we can reuse them symetrically)
 
-train_path=query/${s1}-${t1}/train
+train_path=query/${s1}-${t1}/full
 if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${train_path}" --dico "${dico_train}" --query_size 10 \
@@ -115,7 +115,7 @@ if [ ! -f "${valid_path}" ]; then
         --add_word_coord false --add_query_coord false ;
 fi
 
-test_path=query/${s2}-${t2}/test
+test_path=query/${s2}-${t2}/full
 if [ ! -f "${test_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src2}" --tgt_emb "${output_tgt2}" \
         --filename "${test_path}" --dico "${dico_test}" --query_size 10 \
@@ -126,13 +126,13 @@ fi
     
 # BLI Induction
 
-output_dir1=res/${s2}-${t2}/approx_ndcg_loss_group_2
+output_dir1=res/${s2}-${t2}/${t1}/approx_ndcg_loss_group_2
 
 python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${valid_path}" \
     --test_path "${test_path}" --output_dir "${output_dir1}" --group_size 2 --loss "approx_ndcg_loss" \
     --num_train_steps 100000 --num_features 11 --query_relevance_type 'binary' --query_size 10
     
-output_dir2=res/${s2}-${t2}/approx_ndcg_loss_group_1
+output_dir2=res/${s2}-${t2}/${t1}/approx_ndcg_loss_group_1
     
 python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${valid_path}" \
     --test_path "${test_path}" --output_dir "${output_dir2}" --group_size 1 --loss "approx_ndcg_loss" \
