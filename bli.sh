@@ -15,15 +15,6 @@ if [ ! -d data/ ]; then
 fi
 
 
-if [ ! -d alignement/${s1}-${t1}/ ]; then
-  mkdir -p alignement/${s1}-${t1};
-fi
-
-if [ ! -d alignement/${s2}-${t2}/ ]; then
-  mkdir -p alignement/${s2}-${t2};
-fi
-
-
 if [ ! -d res/${s2}-${t2}/ ]; then
   mkdir -p res/${s2}-${t2};
 fi
@@ -80,18 +71,20 @@ fi
 
 #Aligning embeddings
 
-output_src1=alignement/${s1}-${t1}/${s1}.vec
-output_tgt1=alignement/${s1}-${t1}/${t1}.vec
+output_src1=alignment/${s1}-${t1}/${s1}.vec
+output_tgt1=alignment/${s1}-${t1}/${t1}.vec
 
-if [ ! -d alignement/${s1}-${t1}/ ]; then
+if [ ! -d alignment/${s1}-${t1}/ ]; then
+  mkdir -p alignment/${s1}-${t1}
   python3 unsup_align.py --model_src "${src_emb1}" --model_tgt "${tgt_emb1}" \
     --lexicon "${dico_train}" --output_src "${output_src1}" --output_tgt "${output_tgt1}" ;
 fi
 
-output_src2=alignement/${s2}-${t2}/${s2}.vec
-output_tgt2=alignement/${s2}-${t2}/${t2}.vec
+output_src2=alignment/${s2}-${t2}/${s2}.vec
+output_tgt2=alignment/${s2}-${t2}/${t2}.vec
 
-if [ ! -d alignement/${s2}-${t2}/ ]; then
+if [ ! -d alignment/${s2}-${t2}/ ]; then
+  mkdir -p alignment/${s2}-${t2}
   python3 unsup_align.py --model_src "${src_emb2}" --model_tgt "${tgt_emb2}" \
     --lexicon "${dico_test}" --output_src "${output_src2}" --output_tgt "${output_tgt2}"  ;
 fi
