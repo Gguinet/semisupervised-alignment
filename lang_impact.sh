@@ -1,369 +1,424 @@
 #!/bin/usr/env sh
 
-echo "EN-ES Induction using all available languages" 
+echo "EN-ES, EN-FR, EN-DE, EN-RU Induction using all available languages" 
 
-#Arabic (ar)
-sh bli.sh en ar es
 
-#Bulgarian: bg
-sh bli.sh en bg es
-
-#Catalan: ca
-sh bli.sh en ca es
-
-#Croatian: hr
-sh bli.sh en hr es
-
-#Czech: cs
-sh bli.sh en cs es
+echo "Danish Pivot"
 
 #Danish: da
 sh bli.sh en da es
 
-#Dutch: nl
-sh bli.sh en nl es
-
-#Estonian: et
-sh bli.sh en et es
-
-#Finnish: fi
-sh bli.sh en "fi" es
-
-#French: fr
-sh bli.sh en fr es
-
-#German: de
-sh bli.sh en de es
-
-#Greek: el
-sh bli.sh en el es
-
-#Hebrew: he
-sh bli.sh en he es
-
-#Hungarian: hu
-sh bli.sh en hu es
-
-#Indonesian: id
-sh bli.sh en id es
-
-#Italian: it
-sh bli.sh en it es
-
-#Macedonian: mk
-sh bli.sh en mk es
-
-#Norwegian: no
-sh bli.sh en no es
-
-#Polish: pl
-sh bli.sh en pl es
-
-#Portuguese: pt
-sh bli.sh en pt es
-
-#Romanian: ro
-sh bli.sh en ro es
-
-#Russian: ru
-sh bli.sh en ru es
-
-#Slovak: sk
-sh bli.sh en sk es
-
-#Slovenian: sl
-sh bli.sh en sl es
-
-#Spanish: es
-#sh bli.sh en es es
-
-#Swedish: sv
-sh bli.sh en sv es
-
-#Turkish: tr
-sh bli.sh en tr es
-
-#Ukrainian: uk
-sh bli.sh en uk es
-
-#Vietnamese: vi
-sh bli.sh en "vi" es
-
-
-
-
-
-echo "EN-FR Induction using all available languages"
-
-#Arabic (ar)
-sh bli.sh en ar fr
-
-#Bulgarian: bg
-sh bli.sh en bg fr
-
-#Catalan: ca
-sh bli.sh en ca fr
-
-#Croatian: hr
-sh bli.sh en hr fr
-
-#Czech: cs
-sh bli.sh en cs fr
-
 #Danish: da
 sh bli.sh en da fr
-
-#Dutch: nl
-sh bli.sh en nl fr
-
-#Estonian: et
-sh bli.sh en et fr
-
-#Finnish: fi
-sh bli.sh en "fi" es
-
-#French: fr
-#sh bli.sh en fr es
-
-#German: de
-sh bli.sh en de fr
-
-#Greek: el
-sh bli.sh en el fr
-
-#Hebrew: he
-sh bli.sh en he fr
-
-#Hungarian: hu
-sh bli.sh en hu fr
-
-#Indonesian: id
-sh bli.sh en id fr
-
-#Italian: it
-sh bli.sh en it fr
-
-#Macedonian: mk
-sh bli.sh en mk fr
-
-#Norwegian: no
-sh bli.sh en no fr
-
-#Polish: pl
-sh bli.sh en pl fr
-
-#Portuguese: pt
-sh bli.sh en pt fr
-
-#Romanian: ro
-sh bli.sh en ro fr
-
-#Russian: ru
-sh bli.sh en ru fr
-
-#Slovak: sk
-sh bli.sh en sk fr
-
-#Slovenian: sl
-sh bli.sh en sl fr
-
-#Spanish: es
-sh bli.sh en es fr
-
-#Swedish: sv
-sh bli.sh en sv fr
-
-#Turkish: tr
-sh bli.sh en tr fr
-
-#Ukrainian: uk
-sh bli.sh en uk fr
-
-#Vietnamese: vi
-sh bli.sh en "vi" es
-
-
-
-
-
-
-echo "EN-DE Induction using all available languages"
-
-#Arabic (ar)
-sh bli.sh en ar de
-
-#Bulgarian: bg
-sh bli.sh en bg de
-
-#Catalan: ca
-sh bli.sh en ca de
-
-#Croatian: hr
-sh bli.sh en hr de
-
-#Czech: cs
-sh bli.sh en cs de
 
 #Danish: da
 sh bli.sh en da de
 
-#Dutch: nl
-sh bli.sh en nl de
-
-#Estonian: et
-sh bli.sh en et de
-
-#Finnish: fi
-sh bli.sh en "fi" es
-
-#French: fr
-sh bli.sh en fr de
-
-#German: de
-#sh bli.sh en de es
-
-#Greek: el
-sh bli.sh en el de
-
-#Hebrew: he
-sh bli.sh en he de
-
-#Hungarian: hu
-sh bli.sh en hu de
-
-#Indonesian: id
-sh bli.sh en id de
-
-#Italian: it
-sh bli.sh en it de
-
-#Macedonian: mk
-sh bli.sh en mk de
-
-#Norwegian: no
-sh bli.sh en no de
-
-#Polish: pl
-sh bli.sh en pl de
-
-#Portuguese: pt
-sh bli.sh en pt de
-
-#Romanian: ro
-sh bli.sh en ro de
-
-#Russian: ru
-sh bli.sh en ru de
-
-#Slovak: sk
-sh bli.sh en sk de
-
-#Slovenian: sl
-sh bli.sh en sl de
-
-#Spanish: es
-sh bli.sh en es de
-
-#Swedish: sv
-sh bli.sh en sv de
-
-#Turkish: tr
-sh bli.sh en tr de
-
-#Ukrainian: uk
-sh bli.sh en uk de
-
-#Vietnamese: vi
-sh bli.sh en "vi" es
-
-
-
-
-echo "EN-ES Induction using all available languages"
-
-#Arabic (ar)
-sh bli.sh en ar ru
-
-#Bulgarian: bg
-sh bli.sh en bg ru
-
-#Catalan: ca
-sh bli.sh en ca ru
-
-#Croatian: hr
-sh bli.sh en hr ru
-
-#Czech: cs
-sh bli.sh en cs ru
-
 #Danish: da
 sh bli.sh en da ru
+
+echo "Dutch Pivot"
+
+#Dutch: nl
+sh bli.sh en nl es
+
+#Dutch: nl
+sh bli.sh en nl fr
+
+#Dutch: nl
+sh bli.sh en nl de
 
 #Dutch: nl
 sh bli.sh en nl ru
 
-#Estonian: et
-sh bli.sh en et ru
+echo "French Pivot"
 
-#Finnish: fi
-sh bli.sh en "fi" es
+#French: fr
+sh bli.sh en fr es
+
+#French: fr
+#sh bli.sh en fr fr
+
+#French: fr
+sh bli.sh en fr de
 
 #French: fr
 sh bli.sh en fr ru
 
+echo "German Pivot"
+
+#German: de
+sh bli.sh en de es
+
+#German: de
+sh bli.sh en de fr
+
+#German: de
+#sh bli.sh en de de
+
 #German: de
 sh bli.sh en de ru
 
-#Greek: el
-sh bli.sh en el ru
+echo "Italian Pivot"
 
-#Hebrew: he
-sh bli.sh en he ru
+#Italian: it
+sh bli.sh en it es
 
-#Hungarian: hu
-sh bli.sh en hu ru
+#Italian: it
+sh bli.sh en it fr
 
-#Indonesian: id
-sh bli.sh en id ru
+#Italian: it
+sh bli.sh en it de
 
 #Italian: it
 sh bli.sh en it ru
 
-#Macedonian: mk
-sh bli.sh en mk ru
+echo "Portuguese Pivot"
 
-#Norwegian: no
-sh bli.sh en no ru
+#Portuguese: pt
+sh bli.sh en pt es
 
-#Polish: pl
-sh bli.sh en pl ru
+#Portuguese: pt
+sh bli.sh en pt fr
+
+#Portuguese: pt
+sh bli.sh en pt de
 
 #Portuguese: pt
 sh bli.sh en pt ru
 
-#Romanian: ro
-sh bli.sh en ro ru
+echo "Spanish Pivot"
 
-#Russian: ru
-#sh bli.sh en ru ru
+#Spanish: es
+#sh bli.sh en es es
 
-#Slovak: sk
-sh bli.sh en sk ru
+#Spanish: es
+sh bli.sh en es fr
 
-#Slovenian: sl
-sh bli.sh en sl ru
+#Spanish: es
+sh bli.sh en es de
 
 #Spanish: es
 sh bli.sh en es ru
 
-#Swedish: sv
-sh bli.sh en sv ru
+echo "Russian Pivot"
 
-#Turkish: tr
-sh bli.sh en tr ru
+#Russian: ru
+sh bli.sh en ru es
+
+#Russian: ru
+sh bli.sh en ru fr
+
+#Russian: ru
+sh bli.sh en ru de
+
+#Russian: ru
+#sh bli.sh en ru ru
+
+echo "Slovak Pivot"
+
+#Slovak: sk
+sh bli.sh en sk es
+
+#Slovak: sk
+sh bli.sh en sk fr
+
+#Slovak: sk
+sh bli.sh en sk de
+
+#Slovak: sk
+sh bli.sh en sk ru
+
+echo "Ukrainian"
+
+#Ukrainian: uk
+sh bli.sh en uk es
+
+#Ukrainian: uk
+sh bli.sh en uk fr
+
+#Ukrainian: uk
+sh bli.sh en uk de
 
 #Ukrainian: uk
 sh bli.sh en uk ru
 
+echo "Arabic Pivot"
+
+#Arabic (ar)
+sh bli.sh en ar es
+
+#Arabic (ar)
+sh bli.sh en ar fr
+
+#Arabic (ar)
+sh bli.sh en ar de
+
+#Arabic (ar)
+sh bli.sh en ar ru
+
+echo "Bulgarian Pivot"
+
+#Bulgarian: bg
+sh bli.sh en bg es
+
+#Bulgarian: bg
+sh bli.sh en bg fr
+
+#Bulgarian: bg
+sh bli.sh en bg de
+
+#Bulgarian: bg
+sh bli.sh en bg ru
+
+echo "Catalan Pivot"
+
+#Catalan: ca
+sh bli.sh en ca es
+
+#Catalan: ca
+sh bli.sh en ca fr
+
+#Catalan: ca
+sh bli.sh en ca de
+
+#Catalan: ca
+sh bli.sh en ca ru
+
+echo "Croatian Pivot"
+
+#Croatian: hr
+sh bli.sh en hr es
+
+#Croatian: hr
+sh bli.sh en hr fr
+
+#Croatian: hr
+sh bli.sh en hr de
+
+#Croatian: hr
+sh bli.sh en hr ru
+
+echo "Czech Pivot"
+
+#Czech: cs
+sh bli.sh en cs es
+
+#Czech: cs
+sh bli.sh en cs fr
+
+#Czech: cs
+sh bli.sh en cs it
+
+#Czech: cs
+sh bli.sh en cs ru
+
+echo "Estonian Pivot"
+
+#Estonian: et
+sh bli.sh en et es
+
+#Estonian: et
+sh bli.sh en et fr
+
+#Estonian: et
+sh bli.sh en et de
+
+#Estonian: et
+sh bli.sh en et ru
+
+echo "Greek Pivot"
+
+#Greek: el
+sh bli.sh en el es
+
+#Greek: el
+sh bli.sh en el fr
+
+#Greek: el
+sh bli.sh en el de
+
+#Greek: el
+sh bli.sh en el ru
+
+echo "Hebrew Pivot"
+
+#Hebrew: he
+sh bli.sh en he es
+
+#Hebrew: he
+sh bli.sh en he fr
+
+#Hebrew: he
+sh bli.sh en he it
+
+#Hebrew: he
+sh bli.sh en he ru
+
+echo "Hungarian Pivot"
+
+#Hungarian: hu
+sh bli.sh en hu es
+
+#Hungarian: hu
+sh bli.sh en hu fr
+
+#Hungarian: hu
+sh bli.sh en hu de
+
+#Hungarian: hu
+sh bli.sh en hu ru
+
+echo "Indonesian Pivot"
+
+#Indonesian: id
+sh bli.sh en id es
+
+#Indonesian: id
+sh bli.sh en id fr
+
+#Indonesian: id
+sh bli.sh en id de
+
+#Indonesian: id
+sh bli.sh en id ru
+
+echo "Macedonian Pivot"
+
+#Macedonian: mk
+sh bli.sh en mk es
+
+#Macedonian: mk
+sh bli.sh en mk fr
+
+#Macedonian: mk
+sh bli.sh en mk de
+
+#Macedonian: mk
+sh bli.sh en mk ru
+
+echo "Norwegian Pivot"
+
+#Norwegian: no
+sh bli.sh en no es
+
+#Norwegian: no
+sh bli.sh en no fr
+
+#Norwegian: no
+sh bli.sh en no de
+
+#Norwegian: no
+sh bli.sh en no ru
+
+echo "Polish Pivot"
+
+#Polish: pl
+sh bli.sh en pl es
+
+#Polish: pl
+sh bli.sh en pl fr
+
+#Polish: pl
+sh bli.sh en pl de
+
+#Polish: pl
+sh bli.sh en pl ru
+
+echo "Romanian Pivot"
+
+#Romanian: ro
+sh bli.sh en ro es
+
+#Romanian: ro
+sh bli.sh en ro fr
+
+#Romanian: ro
+sh bli.sh en ro de
+
+#Romanian: ro
+sh bli.sh en ro ru
+
+echo "Slovenian Pivot"
+
+#Slovenian: sl
+sh bli.sh en sl es
+
+#Slovenian: sl
+sh bli.sh en sl fr
+
+#Slovenian: sl
+sh bli.sh en sl de
+
+#Slovenian: sl
+sh bli.sh en sl ru
+
+echo "Swedish Pivot"
+
+#Swedish: sv
+sh bli.sh en sv es
+
+#Swedish: sv
+sh bli.sh en sv fr
+
+#Swedish: sv
+sh bli.sh en sv de
+
+#Swedish: sv
+sh bli.sh en sv ru
+
+echo "Turkish Pivot"
+
+#Turkish: tr
+sh bli.sh en tr es
+
+#Turkish: tr
+sh bli.sh en tr fr
+
+#Turkish: tr
+sh bli.sh en tr de
+
+#Turkish: tr
+sh bli.sh en tr ru
+
+echo "Ukrainian Pivot"
+
+#Ukrainian: uk
+sh bli.sh en uk es
+
+#Ukrainian: uk
+sh bli.sh en uk fr
+
+#Ukrainian: uk
+sh bli.sh en uk de
+
+#Ukrainian: uk
+sh bli.sh en uk ru
+
+echo "Vietnamese Pivot"
+
 #Vietnamese: vi
 sh bli.sh en "vi" es
+
+#Vietnamese: vi
+sh bli.sh en "vi" fr
+
+#Vietnamese: vi
+sh bli.sh en "vi" de
+
+#Vietnamese: vi
+sh bli.sh en "vi" ru
+
+echo "Finnish Pivot"
+
+#Finnish: fi
+sh bli.sh en "fi" es
+
+#Finnish: fi
+sh bli.sh en "fi" fr
+
+#Finnish: fi
+sh bli.sh en "fi" de
+
+#Finnish: fi
+sh bli.sh en "fi" ru

@@ -132,10 +132,3 @@ python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${valid_p
     --test_path "${test_path}" --output_dir "${output_dir1}" --group_size 2 --loss "approx_ndcg_loss" \
     --num_train_steps 100000 --num_features 11 --query_relevance_type 'binary' --query_size 10
     
-output_dir2=res/${s2}-${t2}/${t1}/approx_ndcg_loss_group_1
-    
-python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${valid_path}" \
-    --test_path "${test_path}" --output_dir "${output_dir2}" --group_size 1 --loss "approx_ndcg_loss" \
-    --num_train_steps 100000 --num_features 11 --query_relevance_type 'binary' --query_size 10
-    
-
