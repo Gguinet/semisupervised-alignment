@@ -91,6 +91,7 @@ fi
 
 
 # Query Extraction (full is used instead of train/test as we can reuse them symetrically)
+# To be changed if we use the correction of NN query
 
 train_path=query/${s1}-${t1}/full
 if [ ! -f "${train_path}" ]; then

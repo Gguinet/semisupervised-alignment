@@ -522,6 +522,8 @@ def bilingual_lexical_induction(labels,
         relevance=tf.cast(tf.greater_equal(labels, 1.0), dtype=tf.float32))
   return tf.compat.v1.metrics.mean(bli, per_list_weights)
 
+# END of BLI metric addition
+
 def get_eval_metric_fns():
   """Returns a dict from name to metric functions."""
   metric_fns = {}

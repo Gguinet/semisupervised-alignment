@@ -83,6 +83,7 @@ def compute_embedding_distance(x_src,
     Use a embedding loss for queries construction and save svmlight file.
     More precisely, we use as score the maximum similarity with a given 
     traduction of the considered word in terms of embeddings
+    It correspond to continuous relevance in the paper
     '''
     
     idx_src = list(lexicon.keys())
@@ -179,6 +180,7 @@ def compute_binary_distance(x_src,
     Use a 0-1 loss for queries construction and save svmlight file
     (or 1-2 as 0 is considered as not relevant and therefore, as they are many 0, the prediction
     is nearly always 0)
+    To be modfied for exact query exctraction
     '''
     
     idx_src = list(lexicon.keys())
@@ -202,7 +204,8 @@ def compute_binary_distance(x_src,
     for ind_src,i in enumerate(idx_src):
         
         # We consider ground truth words and fill the remaining with neighboors
-        #in order to have a fixed length of query size
+        # in order to have a fixed length of query size
+        # To change, this is not totally correct
         target = list(lexicon[i])
         others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
         query_list = target + others_neigh[:query_size-len(lexicon[i])]
@@ -254,61 +257,6 @@ def compute_binary_distance(x_src,
         query_id+=1
         
     file.close()
-    
-    
-def compute_binary_distance_df(x_src,
-                               x_tgt,
-                               file_name,
-                               lexicon,
-                               min_relevance=1,
-                               max_relevance=2,
-                               add_query=False,
-                               bsz=100,
-                               query_size=10):
-    '''
-    Use a 0-1 loss for queries construction and save svmlight file using dataframe
-    Give faster loading of data in the pipeline
-    '''
-    idx_src = list(lexicon.keys())
-    print("Expected query size: %d" % (query_size*len(idx_src)))
-    nn_list = compute_NN_list(x_src,x_tgt,idx_src=idx_src,bsz=bsz, nn_size=query_size)
-    
-    if add_query==True:
-        feature_size=600
-    else:
-        feature_size=300
-    
-    final_df = pd.DataFrame(columns=range(feature_size))
-    query_list,relevance_list=[],[]
-    query_id,ind=0,0
-   
-    
-    for i in idx_src:
-        
-        if add_query==True:
-            query_coord=x_src[i]
-        else:
-            query_coord=[]
-        
-        for j in lexicon[i]:
-            
-            final_df.loc[ind]=np.concatenate((x_tgt[j],query_coord),axis=None)
-            relevance_list.append(max_relevance)
-            query_list.append(query_id)
-            ind+=1
-
-        for j in nn_list[i][:query_size-len(lexicon[i])]:
-            
-            if not j in lexicon[i]:
-                
-                final_df.loc[ind]=np.concatenate((x_tgt[j],query_coord),axis=None)
-                relevance_list.append(min_relevance)
-                query_list.append(query_id)
-                ind+=1
-
-        query_id+=1
-    
-    dump_svmlight_file(final_df,relevance_list,file_name,query_id=query_list)
         
         
 def svm_line(coord_list,query_id,relevance):

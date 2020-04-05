@@ -40,36 +40,17 @@ python3 tf_ranking_libsvm.py --train_path 'query/train' --vali_path 'query/valid
     --num_train_steps 100000 --query_relevance_type 'binary' --query_size 10
 ```
 
-**Faire des modifications depuis le terminal gcloud (VIM):**
+**Code framework:**
 
-```
-vim main.sh (ouvre le fichier avec vim en mode lecture)
-i (passe en mode édition pour faire les corrections nécessaires depuis le terminal)
-echap (quitte le mode édition)
-:w (enregistre le fichier)
-:q (quitte le fichier)
-```
-
-**Loss functions:**
-
-* sigmoid_cross_entropy_loss (recommanded for binary relevance)
-* approx_ndcg_loss (recommanded for ndcg optimization)
-* pairwise_hinge_loss
-* pairwise_logistic_loss
-* pairwise_soft_zero_one_loss
-* softmax_loss
-* mean_squared_loss
-* list_mle_loss
-* approx_mrr_loss
-* gumbel_approx_ndcg_loss
-* neural_sort_cross_entropy_loss
-* gumbel_neural_sort_cross_entropy_loss
-
-**Parameters for optimizations:**
-
-* Triplets of languages 
-* Loss functions
-* Query Relevance Type: binary or continuous
-* Coordinate System (CSLS, NN, word or query embeddings...)
-* Size of queries
-* Group Size: Try first 2 instead of 1 (exponential growth)
+* ```Ablation_study``` collects the bash codes associated with the ablation tests.
+* ```bli.sh``` takes as input two languages and run all the framework
+* ```lang_impact.sh``` and ```lang_variation.sh``` run simulations for all languages
+* ```main.sh``` is the older version of ```bli.sh```
+* ```main_pre_align.sh``` and ```pre_alignment.sh``` are precomputing all the alignment for computations (to be deleted)
+* ```query_extraction.py``` is extracting test, validation and training queries for two langues
+* ```single_query_extract.py``` is only exctracting one query (usefull if re-use of query)
+* ```query_aux.py``` is the auxiliary functions for query extraction
+* ``tf_ranking_libsvm.py`` handle the learning to rank
+* ``unsup_align.py`` is the facebook code for unsupervised alignment
+* ``align.py`` and ``unsup_multialign.py`` are the supervised and multi alignment facebook code (not used)
+* ``utils.py`` are auxiliary functions for alignment

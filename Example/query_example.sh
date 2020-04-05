@@ -1,1 +1,0 @@
-python3 query_extraction.py --src_emb_train 'res/wiki.en-es.vec' --tgt_emb_train 'data/wiki.es.vec' --src_emb_test 'res/wiki.en-it.vec' --tgt_emb_test 'data/wiki.it.vec' --output_dir 'query/' --dico_train 'data/en-es.0-5000.txt' --dico_eval 'data/en-es.5000-6500.txt' --dico_test 'data/en-it.0-5000.txt'
