@@ -5,15 +5,34 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+# Modifications for Guinet et al. 
+
 import io
 import numpy as np
 import collections
+from typing import List, Dict, Tuple
 
+def load_vectors(fname: str,
+                maxload: int = 200000,
+                norm: bool = True,
+                center: bool = False,
+                verbose: bool = True) -> Tuple[List,np.Array]:
+    """Load vectors from a path.
+    Args:
+        fname: Path of the file to load
+        maxload: Number of vectors to load
+        norm: If we normalize the vector or not
+        center: If we center the vectors
+        verbose: Verbose parameter
+    Returns:
+        words: List of words
+        x: np.array with the vectors
+    Raises:
 
-def load_vectors(fname, maxload=200000, norm=True, center=False, verbose=True):
+    """
     if verbose:
         print("Loading vectors from %s" % fname)
-    fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
+    fin = io.open(fname, "r", encoding="utf-8", newline="\n", errors="ignore")
     n, d = map(int, fin.readline().split())
     if maxload > 0:
         n = min(n, maxload)
@@ -22,7 +41,7 @@ def load_vectors(fname, maxload=200000, norm=True, center=False, verbose=True):
     for i, line in enumerate(fin):
         if i >= n:
             break
-        tokens = line.rstrip().split(' ')
+        tokens = line.rstrip().split(" ")
         words.append(tokens[0])
         v = np.array(tokens[1:], dtype=float)
         x[i, :] = v
@@ -36,7 +55,15 @@ def load_vectors(fname, maxload=200000, norm=True, center=False, verbose=True):
     return words, x
 
 
-def idx(words):
+def idx(words: List[str]) -> Dict:
+    """Create a mapping from words to indexes
+    Args:
+        words: List of words
+    Returns:
+        w2i: Dict mapping words from their index
+    Raises:
+
+    """
     w2i = {}
     for i, w in enumerate(words):
         if w not in w2i:
@@ -44,30 +71,73 @@ def idx(words):
     return w2i
 
 
-def save_vectors(fname, x, words):
+def save_vectors(fname: str,
+                    x: np.Array,
+                    words: List[str]):
+    """Save into fname the words and their embeddings.
+    Args:
+        fname: Path where to save the filee
+        x: List of embeddings
+        words: List of words
+    Returns:
+        
+    Raises:
+
+    """
     n, d = x.shape
-    fout = io.open(fname, 'w', encoding='utf-8')
+    fout = io.open(fname, "w", encoding="utf-8")
     fout.write(u"%d %d\n" % (n, d))
     for i in range(n):
         fout.write(words[i] + " " + " ".join(map(lambda a: "%.4f" % a, x[i, :])) + "\n")
     fout.close()
 
 
-def save_matrix(fname, x):
+def save_matrix(fname: str,
+                x: np.Array):
+    """Save into fname the wanted matrix, usually the orthogonal matrix from the procrustes problem.
+    Args:
+        fname: Path where to save the filee
+        x: List of embeddings
+    Returns:
+        
+    Raises:
+
+    """
     n, d = x.shape
-    fout = io.open(fname, 'w', encoding='utf-8')
+    fout = io.open(fname, "w", encoding="utf-8")
     fout.write(u"%d %d\n" % (n, d))
     for i in range(n):
         fout.write(" ".join(map(lambda a: "%.4f" % a, x[i, :])) + "\n")
     fout.close()
 
 
-def procrustes(X_src, Y_tgt):
+def procrustes(X_src: np.Array,
+                Y_tgt: np.Array) -> np.Array:
+    """Compute the solution of an Orthogonal Procrustes:
+    $$ min_{Q in On} (X_src * Q - PY) $$
+    Args:
+        X_src, Y_tgt: Matrix from the minimization problem
+    Returns:
+        np.dot(U, V): Solution of the problem
+    Raises:
+
+    """
     U, s, V = np.linalg.svd(np.dot(Y_tgt.T, X_src))
     return np.dot(U, V)
 
 
-def select_vectors_from_pairs(x_src, y_tgt, pairs):
+def select_vectors_from_pairs(x_src: np.Array,
+                                y_tgt: np.Array,
+                                pairs: List) -> Tuple[np.Array, np.Array]:
+    """Select embeddings from the wanted pairs.
+    Args:
+        x_src, y_tgt: List of embeddings
+        pairs: List of pair of indexes we want the embeddings
+    Returns:
+        x,y: The selected embeddings
+    Raises:
+
+    """
     n = len(pairs)
     d = x_src.shape[1]
     x = np.zeros([n, d])
@@ -79,10 +149,25 @@ def select_vectors_from_pairs(x_src, y_tgt, pairs):
     return x, y
 
 
-def load_lexicon(filename, words_src, words_tgt, verbose=True):
-    f = io.open(filename, 'r', encoding='utf-8')
+def load_lexicon(filename: str,
+                words_src: List[str],
+                words_tgt: List[str],
+                verbose: bool = True) -> Tuple[Dict,float]:
+    """Creates a lexicon (mapping) from one language to another.
+    Args:
+        filename: Language 1 & 2 to compute 
+        words_src: Words from language 1
+        words_tgt: Words from language 2
+        verbose: Verbose parameter
+    Returns:
+        lexicon: Mapping from L1 to L2
+        float(len(vocab)): Size of our vocabulary
+    Raises:
+
+    """
+    f = io.open(filename, "r", encoding="utf-8")
     lexicon = collections.defaultdict(set)
-    idx_src , idx_tgt = idx(words_src), idx(words_tgt)
+    idx_src, idx_tgt = idx(words_src), idx(words_tgt)
     vocab = set()
     for line in f:
         word_src, word_tgt = line.split()
@@ -95,25 +180,56 @@ def load_lexicon(filename, words_src, words_tgt, verbose=True):
     return lexicon, float(len(vocab))
 
 
-def load_pairs(filename, idx_src, idx_tgt, verbose=True):
-    f = io.open(filename, 'r', encoding='utf-8')
+def load_pairs(filename: str,
+                idx_src,
+                idx_tgt,
+                verbose: bool = True) -> List:
+    """Creates possible pairs from filename, present in the given indexes.
+    Args:
+        filename: Indexes of pairs to check out
+        idx_src: Indexes from language 1
+        idx_tgt: Indexes from language 2
+        verbose: Verbose parameter
+    Returns:
+        pairs: Available pairs
+    Raises:
+
+    """
+    f = io.open(filename, "r", encoding="utf-8")
     pairs = []
     tot = 0
     for line in f:
-        a, b = line.rstrip().split(' ')
+        a, b = line.rstrip().split(" ")
         tot += 1
         if a in idx_src and b in idx_tgt:
             pairs.append((idx_src[a], idx_tgt[b]))
     if verbose:
         coverage = (1.0 * len(pairs)) / tot
-        print("Found pairs for training: %d - Total pairs in file: %d - Coverage of pairs: %.4f" % (len(pairs), tot, coverage))
+        print(
+            "Found pairs for training: %d - Total pairs in file: %d - Coverage of pairs: %.4f"
+            % (len(pairs), tot, coverage)
+        )
     return pairs
 
+def compute_nn_accuracy(x_src: np.Array,
+                        x_tgt: np.Array,
+                        lexicon: Dict,
+                        bsz: int = 100) -> float:
+    """Computes the accuracy of the alignment between x_src & x_tgt, with the nearest neighbours method.
+    Args: 
+        x_src: Source embeddings
+        x_tgt: Target embeddings
+        lexicon: True mapping
+        bsz: Batch Size
+    Returns:
+        acc / lexicon_size: Accuracy of the alignment
+    Raises:
 
-def compute_nn_accuracy(x_src, x_tgt, lexicon, bsz=100, lexicon_size=-1):
-    if lexicon_size < 0:
-        lexicon_size = len(lexicon)
+    """
+    
+    lexicon_size = len(lexicon)
     idx_src = list(lexicon.keys())
+
     acc = 0.0
     x_src /= np.linalg.norm(x_src, axis=1)[:, np.newaxis] + 1e-8
     x_tgt /= np.linalg.norm(x_tgt, axis=1)[:, np.newaxis] + 1e-8
@@ -126,10 +242,25 @@ def compute_nn_accuracy(x_src, x_tgt, lexicon, bsz=100, lexicon_size=-1):
                 acc += 1.0
     return acc / lexicon_size
 
+def compute_csls_accuracy(x_src: np.Array,
+                            x_tgt: np.Array,
+                            lexicon: Dict,
+                            k: int = 10,
+                            bsz: int = 1024):
+    """Computes the accuracy of the alignment between x_src & x_tgt, with the CSLS method.
+    Args: 
+        x_src: Source embeddings
+        x_tgt: Target embeddings
+        lexicon: True mapping
+        k: Number of neighbours
+        bsz: Batch Size
+    Returns:
+        correct / lexicon_size: Accuracy of the alignment
+    Raises:
 
-def compute_csls_accuracy(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
-    if lexicon_size < 0:
-        lexicon_size = len(lexicon)
+    """
+
+    lexicon_size = len(lexicon)
     idx_src = list(lexicon.keys())
 
     x_src /= np.linalg.norm(x_src, axis=1)[:, np.newaxis] + 1e-8
@@ -148,7 +279,7 @@ def compute_csls_accuracy(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024
 
     nn = np.argmax(similarities, axis=1).tolist()
     correct = 0.0
-    for k in range(0, len(lexicon)):
-        if nn[k] in lexicon[idx_src[k]]:
+    for k_ in range(0, len(lexicon)):
+        if nn[k_] in lexicon[idx_src[k_]]:
             correct += 1.0
     return correct / lexicon_size

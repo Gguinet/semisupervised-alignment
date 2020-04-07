@@ -7,20 +7,36 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+# Modifications for Guinet et al. 
+
+# TODO
+
 import io
 import numpy as np
 import argparse
 from utils import *
 
-parser = argparse.ArgumentParser(description='Evaluation of word alignment')
-parser.add_argument("--src_emb", type=str, default='', help="Load source embeddings")
-parser.add_argument("--tgt_emb", type=str, default='', help="Load target embeddings")
-parser.add_argument('--center', action='store_true', help='whether to center embeddings or not')
-parser.add_argument("--src_mat", type=str, default='', help="Load source alignment matrix. If none given, the aligment matrix is the identity.")
-parser.add_argument("--tgt_mat", type=str, default='', help="Load target alignment matrix. If none given, the aligment matrix is the identity.")
-parser.add_argument("--dico_test", type=str, default='', help="test dictionary")
+parser = argparse.ArgumentParser(description="Evaluation of word alignment")
+parser.add_argument("--src_emb", type=str, default="", help="Load source embeddings")
+parser.add_argument("--tgt_emb", type=str, default="", help="Load target embeddings")
+parser.add_argument(
+    "--center", action="store_true", help="whether to center embeddings or not"
+)
+parser.add_argument(
+    "--src_mat",
+    type=str,
+    default="",
+    help="Load source alignment matrix. If none given, the aligment matrix is the identity.",
+)
+parser.add_argument(
+    "--tgt_mat",
+    type=str,
+    default="",
+    help="Load target alignment matrix. If none given, the aligment matrix is the identity.",
+)
+parser.add_argument("--dico_test", type=str, default="", help="test dictionary")
 parser.add_argument("--maxload", type=int, default=200000)
-parser.add_argument("--nomatch", action='store_true', help="no exact match in lexicon")
+parser.add_argument("--nomatch", action="store_true", help="no exact match in lexicon")
 params = parser.parse_args()
 
 
@@ -28,11 +44,12 @@ params = parser.parse_args()
 # function specific to evaluation
 # the rest of the functions are in utils.py
 
+
 def load_transform(fname, d1=300, d2=300):
-    fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
+    fin = io.open(fname, "r", encoding="utf-8", newline="\n", errors="ignore")
     R = np.zeros([d1, d2])
     for i, line in enumerate(fin):
-        tokens = line.split(' ')
+        tokens = line.split(" ")
         R[i, :] = np.array(tokens[0:d2], dtype=float)
     return R
 
@@ -43,8 +60,12 @@ print("Evaluation of alignment on %s" % params.dico_test)
 if params.nomatch:
     print("running without exact string matches")
 
-words_tgt, x_tgt = load_vectors(params.tgt_emb, maxload=params.maxload, center=params.center)
-words_src, x_src = load_vectors(params.src_emb, maxload=params.maxload, center=params.center)
+words_tgt, x_tgt = load_vectors(
+    params.tgt_emb, maxload=params.maxload, center=params.center
+)
+words_src, x_src = load_vectors(
+    params.src_emb, maxload=params.maxload, center=params.center
+)
 
 if params.tgt_mat != "":
     R_tgt = load_transform(params.tgt_mat)
@@ -57,4 +78,7 @@ src2tgt, lexicon_size = load_lexicon(params.dico_test, words_src, words_tgt)
 
 nnacc = compute_nn_accuracy(x_src, x_tgt, src2tgt, lexicon_size=lexicon_size)
 cslsproc = compute_csls_accuracy(x_src, x_tgt, src2tgt, lexicon_size=lexicon_size)
-print("NN = %.4f - CSLS = %.4f - Coverage = %.4f" % (nnacc, cslsproc, len(src2tgt) / lexicon_size))
+print(
+    "NN = %.4f - CSLS = %.4f - Coverage = %.4f"
+    % (nnacc, cslsproc, len(src2tgt) / lexicon_size)
+)
