@@ -94,7 +94,7 @@ def save_vectors(fname: str,
 
 def save_matrix(fname: str,
                 x: np.Array):
-    """Save into fname the embeddings.
+    """Save into fname the wanted matrix, usually the orthogonal matrix from the procrustes problem.
     Args:
         fname: Path where to save the filee
         x: List of embeddings
@@ -211,8 +211,6 @@ def load_pairs(filename: str,
         )
     return pairs
 
-## TODO: @Gauthier: Unsure, to check
-
 def compute_nn_accuracy(x_src: np.Array,
                         x_tgt: np.Array,
                         lexicon: Dict,
@@ -222,7 +220,7 @@ def compute_nn_accuracy(x_src: np.Array,
         x_src: Source embeddings
         x_tgt: Target embeddings
         lexicon: True mapping
-        bsz: Number of neighbours to consider
+        bsz: Batch Size
     Returns:
         acc / lexicon_size: Accuracy of the alignment
     Raises:
@@ -244,8 +242,6 @@ def compute_nn_accuracy(x_src: np.Array,
                 acc += 1.0
     return acc / lexicon_size
 
-## TODO: @Gauthier: Unsure, to check
-
 def compute_csls_accuracy(x_src: np.Array,
                             x_tgt: np.Array,
                             lexicon: Dict,
@@ -256,8 +252,8 @@ def compute_csls_accuracy(x_src: np.Array,
         x_src: Source embeddings
         x_tgt: Target embeddings
         lexicon: True mapping
-        k: ??
-        bsz: Number of neighbours to consider
+        k: Number of neighbours
+        bsz: Batch Size
     Returns:
         correct / lexicon_size: Accuracy of the alignment
     Raises:

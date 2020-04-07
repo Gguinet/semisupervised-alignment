@@ -325,142 +325,19 @@ def make_score_fn():
 
     return _score_fn
 
-def _get_weights(features):
-    """Get weights tensor from features and reshape it to 2-D if necessary."""
-    weights = None
-    return weights
-
-
-def _per_example_weights_to_per_list_weights(weights, relevance):
-    """Computes per list weight from per example weight.
-  The per-list weights are computed as:
-    per_list_weights = sum(weights * relevance) / sum(relevance).
-  For the list with sum(relevance) = 0, we set a default weight as the following
-  average weight:
-    sum(per_list_weights) / num(sum(relevance) != 0)
-  Such a computation is good for the following scenarios:
-    - When all the weights are 1.0, the per list weights will be 1.0 everywhere,
-      even for lists without any relevant examples because
-        sum(per_list_weights) ==  num(sum(relevance) != 0)
-      This handles the standard ranking metrics where the weights are all 1.0.
-    - When every list has a nonzero weight, the default weight is not used. This
-      handles the unbiased metrics well.
-    - For the mixture of the above 2 scenario, the weights for lists with
-      nonzero relevance is proportional to
-        per_list_weights / sum(per_list_weights) *
-        num(sum(relevance) != 0) / num(lists).
-      The rest have weights 1.0 / num(lists).
-  Args:
-    weights:  The weights `Tensor` of shape [batch_size, list_size].
-    relevance:  The relevance `Tensor` of shape [batch_size, list_size].
-  Returns:
-    The per list `Tensor` of shape [batch_size, 1]
-  """
-    per_list_relevance = tf.reduce_sum(input_tensor=relevance, axis=1, keepdims=True)
-    nonzero_relevance = tf.cast(tf.greater(per_list_relevance, 0.0), tf.float32)
-    nonzero_relevance_count = tf.reduce_sum(
-        input_tensor=nonzero_relevance, axis=0, keepdims=True
-    )
-
-    per_list_weights = tf.compat.v1.math.divide_no_nan(
-        tf.reduce_sum(input_tensor=weights * relevance, axis=1, keepdims=True),
-        per_list_relevance,
-    )
-    sum_weights = tf.reduce_sum(input_tensor=per_list_weights, axis=0, keepdims=True)
-
-    avg_weight = tf.compat.v1.math.divide_no_nan(sum_weights, nonzero_relevance_count)
-    return tf.compat.v1.where(
-        tf.greater(per_list_relevance, 0.0),
-        per_list_weights,
-        tf.ones_like(per_list_weights) * avg_weight,
-    )
-
-
-def _prepare_and_validate_params(labels, predictions, weights=None, topn=None):
-    """Prepares and validates the parameters.
-  Args:
-    labels: A `Tensor` of the same shape as `predictions`. A value >= 1 means a
-      relevant example.
-    predictions: A `Tensor` with shape [batch_size, list_size]. Each value is
-      the ranking score of the corresponding example.
-    weights: A `Tensor` of the same shape of predictions or [batch_size, 1]. The
-      former case is per-example and the latter case is per-list.
-    topn: A cutoff for how many examples to consider for this metric.
-  Returns:
-    (labels, predictions, weights, topn) ready to be used for metric
-    calculation.
-  """
-    labels = tf.convert_to_tensor(value=labels)
-    predictions = tf.convert_to_tensor(value=predictions)
-    weights = 1.0 if weights is None else tf.convert_to_tensor(value=weights)
-    example_weights = tf.ones_like(labels) * weights
-    predictions.get_shape().assert_is_compatible_with(example_weights.get_shape())
-    predictions.get_shape().assert_is_compatible_with(labels.get_shape())
-    predictions.get_shape().assert_has_rank(2)
-    if topn is None:
-        topn = tf.shape(input=predictions)[1]
-
-    # All labels should be >= 0. Invalid entries are reset.
-    is_label_valid = utils.is_label_valid(labels)
-    labels = tf.compat.v1.where(is_label_valid, labels, tf.zeros_like(labels))
-    predictions = tf.compat.v1.where(
-        is_label_valid,
-        predictions,
-        -1e-6 * tf.ones_like(predictions)
-        + tf.reduce_min(input_tensor=predictions, axis=1, keepdims=True),
-    )
-    return labels, predictions, example_weights, topn
-
-
 def bilingual_lexical_induction(labels, predictions, features):
-    """Computes Bilingual Lexicon Induction (BLI).
-  Args:
-    labels: A `Tensor` of the same shape as `predictions`. A value >= 1 means a
-      relevant example.
-    predictions: A `Tensor` with shape [batch_size, list_size]. Each value is
-      the ranking score of the corresponding example.
-    weights: A `Tensor` of the same shape of predictions or [batch_size, 1]. The
-      former case is per-example and the latter case is per-list.
-    name: A string used as the name for this metric.
-  Returns:
-    A metric for the weighted bilingual lexical induction of the batch.
-  """
-    weights = _get_weights(features) # ->>>>>> # @Gauthier So your weights are alawys None?
-    labels, predictions, weights, _ = _prepare_and_validate_params(
-        labels, predictions, weights
-    )
-    # @Gauthier
-    # So now your weights are always 1?
-    sorted_labels, _ = utils.sort_by_scores(predictions, [labels])
+    """Compute the BLI. We do not make all the needed verifications as they were already made for previous metrics."""
 
-    # We need the relevance of the correct vocabulary
     if FLAGS.query_relevance_type == "binary":
         ground_truth = 2
     else:
-        ######### @Gauthier : Why?
         ground_truth = FLAGS.query_size 
-        #########
-
-    # Relevance = 1.0 when labels = ground_truth
+    # We get the label of the highest ranked word by the model
+    sorted_labels = utils.sort_by_scores(predictions, [labels],topn = 1)[0]
+    # We check if the label is equal to ground truth
     relevance = tf.cast(tf.equal(sorted_labels, ground_truth), dtype=tf.float32)
-    # We only consider the first suggestion [:,0] and BLI has a shape of [batch_size, 1].
-    list_size = tf.shape(input=relevance)[0]
-    bli = tf.reshape(relevance[:, 0], (list_size, 1))
-    per_list_weights = _per_example_weights_to_per_list_weights(
-        weights=weights,
-        relevance=tf.cast(tf.greater_equal(labels, 1.0), dtype=tf.float32),
-    )
-    # @Gauthier
-    # So here your per_list_weights are always 1?? 
-    # Why don't we just compute the mean of the tensor? 
-    # 
-    #
-    #
-    return tf.compat.v1.metrics.mean(bli, per_list_weights)
-
-
-# END of BLI metric addition
-
+    # We return it
+    return tf.compat.v1.metrics.mean(relevance)
 
 def get_eval_metric_fns():
     """Returns a dict from name to metric functions."""
@@ -483,8 +360,13 @@ def get_eval_metric_fns():
             for topn in [1, 3, 5, 10]
         }
     )
+    
     # Adding the new metric
-    metric_fns.update({"metric/bli": bilingual_lexical_induction})
+    metric_fns.update(
+        {
+            "metric/bli": bilingual_lexical_induction
+        }
+    )
 
     return metric_fns
 
