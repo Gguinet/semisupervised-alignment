@@ -123,8 +123,7 @@ Z_tgt = x_tgt[: params.maxneg, :]
 # initialization:
 R = procrustes(X_src, Y_tgt)
 nnacc = compute_nn_accuracy(
-    np.dot(x_src, R.T), x_tgt, src2tgt, lexicon_size=lexicon_size
-)
+    np.dot(x_src, R.T), x_tgt, src2tgt)
 print("[init -- Procrustes] NN: %.4f" % (nnacc))
 sys.stdout.flush()
 
@@ -159,16 +158,14 @@ for it in range(0, niter + 1):
 
     if (it > 0 and it % 10 == 0) or it == niter:
         nnacc = compute_nn_accuracy(
-            np.dot(x_src, R.T), x_tgt, src2tgt, lexicon_size=lexicon_size
-        )
+            np.dot(x_src, R.T), x_tgt, src2tgt)
         print(
             "[it=%d] NN = %.4f - Coverage = %.4f"
             % (it, nnacc, len(src2tgt) / lexicon_size)
         )
 
 nnacc = compute_nn_accuracy(
-    np.dot(x_src, R.T), x_tgt, src2tgt, lexicon_size=lexicon_size
-)
+    np.dot(x_src, R.T), x_tgt, src2tgt)
 print("[final] NN = %.4f - Coverage = %.4f" % (nnacc, len(src2tgt) / lexicon_size))
 
 if params.output != "":

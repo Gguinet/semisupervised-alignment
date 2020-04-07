@@ -90,32 +90,27 @@ parser.add_argument(
     help="Number of coord in query for CSLS distance (from 0 to k)",
 )
 parser.add_argument(
-    "--add_word_coord",
+    "--testing_query",
     type=str2bool,
     default=True,
+    help="Whether to impose the ground truth traduction presence in the testing query",
+)
+parser.add_argument(
+    "--add_word_coord",
+    type=str2bool,
+    default=False,
     help="Whether to add to query coord word embedding",
 )
 parser.add_argument(
     "--add_query_coord",
     type=str2bool,
-    default=True,
+    default=False,
     help="Whether to add to query coord query word embedding",
 )
 
 params = parser.parse_args()
 
 ###### MAIN ######
-
-# There are two options:
-
-# The first one is to align english to spanish, to learn using the modified english embeddings
-# In the second time, we then align english to italian and use the learning for the
-# new english embeddings. In this scenario, english is the source language and we have 4 distincts embeddings to
-# consider
-
-# The second setting is to align spanish to english, learn using spanish modified embeddings with fix english
-# embeddings. Thus, there is only english target embeddings and 2 source embeddings
-
 
 query_extractor = (
     compute_binary_distance
@@ -143,6 +138,7 @@ query_extractor(
     src2tgt_train,
     add_csls_coord=params.add_csls_coord,
     k_csls=params.k_csls,
+    testing_query=False,
     add_word_coord=params.add_word_coord,
     add_query_coord=params.add_query_coord,
     query_size=params.query_size,
@@ -160,6 +156,7 @@ query_extractor(
     src2tgt_valid,
     add_csls_coord=params.add_csls_coord,
     k_csls=params.k_csls,
+    testing_query=False,
     add_word_coord=params.add_word_coord,
     add_query_coord=params.add_query_coord,
     query_size=params.query_size,
@@ -185,6 +182,7 @@ query_extractor(
     src2tgt_test,
     add_csls_coord=params.add_csls_coord,
     k_csls=params.k_csls,
+    testing_query=params.testing_query,
     add_word_coord=params.add_word_coord,
     add_query_coord=params.add_query_coord,
     query_size=params.query_size,

@@ -90,15 +90,15 @@ if [ ! -d alignment/${s2}-${t2}/ ]; then
 fi
 
 
-# Query Extraction (full is used instead of train/test as we can reuse them symetrically)
-# To be changed if we use the correction of NN query
+# Query Extraction 
+# For the testing, we do not force the presence of ground truth in each query
 
-train_path=query/${s1}-${t1}/full
+train_path=query/${s1}-${t1}/train
 if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${train_path}" --dico "${dico_train}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
-        --add_word_coord false --add_query_coord false ;
+        --testing_query false --add_word_coord false --add_query_coord false ;
 fi
 
 valid_path=query/${s1}-${t1}/valid
@@ -106,15 +106,15 @@ if [ ! -f "${valid_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${valid_path}" --dico "${dico_valid}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
-        --add_word_coord false --add_query_coord false ;
+        --testing_query false --add_word_coord false --add_query_coord false ;
 fi
 
-test_path=query/${s2}-${t2}/full
+test_path=query/${s2}-${t2}/test
 if [ ! -f "${test_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src2}" --tgt_emb "${output_tgt2}" \
         --filename "${test_path}" --dico "${dico_test}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
-        --add_word_coord false --add_query_coord false ;
+        --testing_query true --add_word_coord false --add_query_coord false ;
 fi
 
     
