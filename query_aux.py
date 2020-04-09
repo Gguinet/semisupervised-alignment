@@ -186,6 +186,7 @@ def compute_binary_distance(
     file_name,
     lexicon,
     k_csls=10,
+    discard_empty_query = False,
     testing_query=False,
     add_csls_coord=True,
     add_word_coord=True,
@@ -225,10 +226,18 @@ def compute_binary_distance(
         # For the testing scenario, we do not want to force their 
         # presence whereas for the learning scenario, they are 
         # necessary
-        if testing_query == True:
+        if discard_empty_query == True:
+            # Do not write queries with no relevent labels with (at the moment) the NN method 
+            if lexicon[i] in nn_list[i]:
+                query_list = nn_list[i]
+                discard_curr_query = False
+            else:
+                discard_curr_query = True
+
+        elif testing_query == True:
             
             query_list = nn_list[i]
-            
+            discard_curr_query = False
         else:
             
             # We consider ground truth words and fill the remaining with neighboors
@@ -236,46 +245,48 @@ def compute_binary_distance(
             target = list(lexicon[i])
             others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
             query_list = target + others_neigh[: query_size - len(lexicon[i])]
+            discard_curr_query = False
 
-        for ind, j in enumerate(query_list):
+        if not discard_curr_query:
+            for ind, j in enumerate(query_list):
 
-            total_coord = []
+                total_coord = []
 
-            if add_csls_coord == True:
+                if add_csls_coord == True:
 
-                similarity = np.dot(x_src[i], x_tgt[j].T)
-                # We append NN similarity
-                total_coord.append(similarity)
-                # We append k CSLS similarity
-                total_coord = np.concatenate(
-                    (
-                        total_coord,
-                        similarity - x_src_penalty[ind_src, :] - x_tgt_penalty[j, :],
-                    ),
-                    axis=None,
-                )
+                    similarity = np.dot(x_src[i], x_tgt[j].T)
+                    # We append NN similarity
+                    total_coord.append(similarity)
+                    # We append k CSLS similarity
+                    total_coord = np.concatenate(
+                        (
+                            total_coord,
+                            similarity - x_src_penalty[ind_src, :] - x_tgt_penalty[j, :],
+                        ),
+                        axis=None,
+                    )
 
-            if add_word_coord == True:
+                if add_word_coord == True:
 
-                # We add the coord of the potential translation word
-                total_coord = np.concatenate((total_coord, x_tgt[j]), axis=None)
+                    # We add the coord of the potential translation word
+                    total_coord = np.concatenate((total_coord, x_tgt[j]), axis=None)
 
-            if add_query_coord == True:
+                if add_query_coord == True:
 
-                # We add the coord of the query word
-                total_coord = np.concatenate((total_coord, x_src[i]), axis=None)
+                    # We add the coord of the query word
+                    total_coord = np.concatenate((total_coord, x_src[i]), axis=None)
 
-            # For the given traduction, the relevance is max_relevance
-            if j in lexicon[i]:
+                # For the given traduction, the relevance is max_relevance
+                if j in lexicon[i]:
 
-                line = svm_line(total_coord, query_id, max_relevance)
-                file.write(line)
+                    line = svm_line(total_coord, query_id, max_relevance)
+                    file.write(line)
 
-            # For the other nearest neighboors, the relevance is min_relevance
-            else:
-                
-                line = svm_line(total_coord, query_id, min_relevance)
-                file.write(line)
+                # For the other nearest neighboors, the relevance is min_relevance
+                else:
+                    
+                    line = svm_line(total_coord, query_id, min_relevance)
+                    file.write(line)
 
         query_id += 1
 
