@@ -95,7 +95,7 @@ python3 query_extraction.py --src_emb_train "${output_src1}" --tgt_emb_train "${
     --src_emb_test "${output_src2}" --tgt_emb_test "${output_tgt2}" --output_dir 'query/' \
     --dico_train "${dico_train}" --dico_valid "${dico_valid}" --dico_test "${dico_test}" \
     --query_size 10 --query_relevance_type 'binary' --add_csls_coord true \
-    --k_csls 10 --add_word_coord false --add_query_coord false 
+    --k_csls 10 --testing_query true --add_word_coord false --add_query_coord false 
 
 # Group size 1 
 echo "Group size 1"

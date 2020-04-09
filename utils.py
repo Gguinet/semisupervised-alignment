@@ -16,7 +16,7 @@ def load_vectors(fname: str,
                 maxload: int = 200000,
                 norm: bool = True,
                 center: bool = False,
-                verbose: bool = True) -> Tuple[List,np.Array]:
+                verbose: bool = True) -> Tuple[List,np.array]:
     """Load vectors from a path.
     Args:
         fname: Path of the file to load
@@ -72,7 +72,7 @@ def idx(words: List[str]) -> Dict:
 
 
 def save_vectors(fname: str,
-                    x: np.Array,
+                    x: np.array,
                     words: List[str]):
     """Save into fname the words and their embeddings.
     Args:
@@ -93,7 +93,7 @@ def save_vectors(fname: str,
 
 
 def save_matrix(fname: str,
-                x: np.Array):
+                x: np.array):
     """Save into fname the wanted matrix, usually the orthogonal matrix from the procrustes problem.
     Args:
         fname: Path where to save the filee
@@ -111,8 +111,8 @@ def save_matrix(fname: str,
     fout.close()
 
 
-def procrustes(X_src: np.Array,
-                Y_tgt: np.Array) -> np.Array:
+def procrustes(X_src: np.array,
+                Y_tgt: np.array) -> np.array:
     """Compute the solution of an Orthogonal Procrustes:
     $$ min_{Q in On} (X_src * Q - PY) $$
     Args:
@@ -126,9 +126,9 @@ def procrustes(X_src: np.Array,
     return np.dot(U, V)
 
 
-def select_vectors_from_pairs(x_src: np.Array,
-                                y_tgt: np.Array,
-                                pairs: List) -> Tuple[np.Array, np.Array]:
+def select_vectors_from_pairs(x_src: np.array,
+                                y_tgt: np.array,
+                                pairs: List) -> Tuple[np.array, np.array]:
     """Select embeddings from the wanted pairs.
     Args:
         x_src, y_tgt: List of embeddings
@@ -211,8 +211,8 @@ def load_pairs(filename: str,
         )
     return pairs
 
-def compute_nn_accuracy(x_src: np.Array,
-                        x_tgt: np.Array,
+def compute_nn_accuracy(x_src: np.array,
+                        x_tgt: np.array,
                         lexicon: Dict,
                         bsz: int = 100) -> float:
     """Computes the accuracy of the alignment between x_src & x_tgt, with the nearest neighbours method.
@@ -242,8 +242,8 @@ def compute_nn_accuracy(x_src: np.Array,
                 acc += 1.0
     return acc / lexicon_size
 
-def compute_csls_accuracy(x_src: np.Array,
-                            x_tgt: np.Array,
+def compute_csls_accuracy(x_src: np.array,
+                            x_tgt: np.array,
                             lexicon: Dict,
                             k: int = 10,
                             bsz: int = 1024):

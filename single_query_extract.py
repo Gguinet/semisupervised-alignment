@@ -67,6 +67,12 @@ parser.add_argument(
     help="Number of coord in query for CSLS distance (from 0 to k)",
 )
 parser.add_argument(
+    "--testing_query",
+    type=str2bool,
+    default=False,
+    help="Whether to impose the ground truth traduction presence in the query",
+)
+parser.add_argument(
     "--add_word_coord",
     type=str2bool,
     default=True,
@@ -109,6 +115,7 @@ query_extractor(
     src2tgt,
     add_csls_coord=params.add_csls_coord,
     k_csls=params.k_csls,
+    testing_query=params.testing_query,
     add_word_coord=params.add_word_coord,
     add_query_coord=params.add_query_coord,
     query_size=params.query_size,

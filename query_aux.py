@@ -82,6 +82,7 @@ def compute_embedding_distance(
     file_name,
     lexicon,
     k_csls=10,
+    testing_query=False,
     add_csls_coord=True,
     add_word_coord=True,
     add_query_coord=False,
@@ -113,12 +114,22 @@ def compute_embedding_distance(
         )
 
     for ind_src, i in enumerate(idx_src):
-
-        # We consider ground truth words and fill the remaining with neighboors
-        # in order to have a fixed length of query size
-        target = list(lexicon[i])
-        others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
-        query_list = target + others_neigh[: query_size - len(lexicon[i])]
+        
+        # Whether or not to add ground truth words in each query.
+        # For the testing scenario, we do not want to force their 
+        # presence whereas for the learning scenario, they are 
+        # necessary
+        if testing_query == True:
+            
+            query_list = nn_list[i]
+            
+        else:
+            
+            # We consider ground truth words and fill the remaining with neighboors
+            # in order to have a fixed length of query size
+            target = list(lexicon[i])
+            others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
+            query_list = target + others_neigh[: query_size - len(lexicon[i])]
 
         score = np.dot(x_tgt[query_list], x_tgt[target].T).max(axis=1)
         # score=(score/score.min()).round().astype('int')
@@ -144,7 +155,7 @@ def compute_embedding_distance(
 
             if add_word_coord == True:
 
-                # We add the coord of the query word
+                # We add the coord of the potential translation word
                 total_coord = np.concatenate((total_coord, x_tgt[j]), axis=None)
 
             if add_query_coord == True:
@@ -175,6 +186,7 @@ def compute_binary_distance(
     file_name,
     lexicon,
     k_csls=10,
+    testing_query=False,
     add_csls_coord=True,
     add_word_coord=True,
     add_query_coord=False,
@@ -209,12 +221,21 @@ def compute_binary_distance(
 
     for ind_src, i in enumerate(idx_src):
 
-        # We consider ground truth words and fill the remaining with neighboors
-        # in order to have a fixed length of query size
-        # To change, this is not totally correct
-        target = list(lexicon[i])
-        others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
-        query_list = target + others_neigh[: query_size - len(lexicon[i])]
+        # Whether or not to add ground truth words in each query.
+        # For the testing scenario, we do not want to force their 
+        # presence whereas for the learning scenario, they are 
+        # necessary
+        if testing_query == True:
+            
+            query_list = nn_list[i]
+            
+        else:
+            
+            # We consider ground truth words and fill the remaining with neighboors
+            # in order to have a fixed length of query size
+            target = list(lexicon[i])
+            others_neigh = [elem for elem in nn_list[i] if elem not in lexicon[i]]
+            query_list = target + others_neigh[: query_size - len(lexicon[i])]
 
         for ind, j in enumerate(query_list):
 
@@ -236,7 +257,7 @@ def compute_binary_distance(
 
             if add_word_coord == True:
 
-                # We add the coord of the query word
+                # We add the coord of the potential translation word
                 total_coord = np.concatenate((total_coord, x_tgt[j]), axis=None)
 
             if add_query_coord == True:
@@ -252,6 +273,7 @@ def compute_binary_distance(
 
             # For the other nearest neighboors, the relevance is min_relevance
             else:
+                
                 line = svm_line(total_coord, query_id, min_relevance)
                 file.write(line)
 
