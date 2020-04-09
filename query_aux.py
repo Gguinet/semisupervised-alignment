@@ -32,7 +32,7 @@ def compute_NN_list(x_src, x_tgt, idx_src, bsz=100, nn_size=10):
     return nn_list
 
 
-def compute_csls_coord(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
+def compute_csls_coord(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024,return_similarity=False):
     """
     Compute similarity and CSLS penalty (from 0 to k) for all word vectors 
     """
@@ -45,7 +45,7 @@ def compute_csls_coord(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
 
     sr = x_src[list(idx_src)]
 
-    # similarities = 2 * np.dot(sr, x_tgt.T)
+    similarities = 2 * np.dot(sr, x_tgt.T)
 
     # We compute x_tgt penaly for k steps of nn
     x_tgt_penalty = np.zeros((x_tgt.shape[0], k))
@@ -69,11 +69,47 @@ def compute_csls_coord(x_src, x_tgt, lexicon, lexicon_size=-1, k=10, bsz=1024):
         for l in range(0, k):
             x_src_penalty[i:j, l] = np.mean(relevant_nn_dotprod[:, l:], axis=1)
 
-    # similarities -= x_src_penalty[:,np.newaxis]
-    # similarities -= x_tgt_penalty[np.newaxis, :]
+    if return_similarity:
+        return similarities,x_src_penalty,x_tgt_penalty
+    else:   
+        return x_src_penalty, x_tgt_penalty
 
-    # return similarities,x_src_penalty,x_tgt_penalty
-    return x_src_penalty, x_tgt_penalty
+# @GGuinet : can you review this (especially line 99 to end of function)
+# to make sure it is ok
+# I used the nn_list function and it should be the same, just make sure we want the biggest similarity just
+# like we wanted the biggest dot product and etc
+
+def compute_csls_list(x_src, x_tgt, lexicon,idx_src, nn_size = 10,lexicon_size=-1, k=10, bsz=1024):
+
+    similarities,x_src_penalty,x_tgt_penalty = compute_csls_coord(x_src, x_tgt,
+                                                                    lexicon,
+                                                                    lexicon_size=lexicon_size,
+                                                                    k=k,
+                                                                    bsz=bsz,
+                                                                    nn_size = nn_size,
+                                                                    return_similarity=True)
+    
+    # x_src_penalty and x_tgt_penalty are of shape [number of words,k].
+    # We need to keep only the first column (the penalty for each word) and add this penalties to the similarity
+    x_src_penalty = x_src_penalty[:,0]
+    x_tgt_penalty = x_tgt_penalty[:,0]
+    # We then remove these to the similarities :
+    similarities -= x_src_penalty[:,np.newaxis]
+    similarities -= x_tgt_penalty[np.newaxis, :]
+    # We now have a matrix with similarities[i,j] = csls(src[i],tgt[j])
+    # We need to compute the list of the nearest neighboors (in terms of csls) in target space 
+    #for each word in source words (meaning the biggest similarity)
+    csls_list = dict()   
+    for i in range(len(idx_src)):
+        # For the i-th source word, the csls similarity with each word from target :
+        scores = similarities[i,:]
+        ind = np.argpartition(scores, -nn_size, axis=0)[-nn_size:]
+        for j in range(i,len(idx_src)):
+            csls_list[idx_src[j]] = list(
+                ind[:, j - i][np.argsort(scores[:, j - i][ind[:, j - i]])]
+            )[::-1]
+    return csls_list                                                                                                                                                                                                                                                                                                                                              
+    
 
 
 def compute_embedding_distance(

@@ -63,7 +63,7 @@ args = parser.parse_args()
 ###### SPECIFIC FUNCTIONS ######
 
 
-def getknn(sc, x, y, k=10):
+def getknn(sc,x, y, k=10):
     sidx = np.argpartition(sc, -k, axis=1)[:, -k:]
     ytopk = y[sidx.flatten(), :]
     ytopk = ytopk.reshape(sidx.shape[0], sidx.shape[1], y.shape[1])
