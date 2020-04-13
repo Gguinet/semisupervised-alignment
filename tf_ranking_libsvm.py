@@ -175,7 +175,7 @@ def get_train_inputs(features, labels, batch_size):
         dataset = tf.data.Dataset.from_tensor_slices(
             (features_placeholder, labels_placeholder)
         )
-        dataset = dataset.shuffle(1000).repeat().batch(batch_size)
+        dataset = dataset.shuffle(5000).repeat().batch(batch_size)
         iterator = tf.compat.v1.data.make_initializable_iterator(dataset)
         if _use_multi_head():
             feed_dict = {
@@ -473,3 +473,30 @@ if __name__ == "__main__":
     flags.mark_flag_as_required("output_dir")
 
     tf.compat.v1.app.run()
+
+"""
+WIP - make predictions : 
+
+def predict_input_fn(path):
+  context_feature_spec = tf.feature_column.make_parse_example_spec(
+        context_feature_columns().values())
+  example_feature_spec = tf.feature_column.make_parse_example_spec(
+        list(example_feature_columns().values()))
+  dataset = tfr.data.build_ranking_dataset(
+        file_pattern=path,
+        data_format=tfr.data.EIE,
+        batch_size=_BATCH_SIZE,
+        list_size=_LIST_SIZE,
+        context_feature_spec=context_feature_spec,
+        example_feature_spec=example_feature_spec,
+        reader=tf.data.TFRecordDataset,
+        shuffle=False,
+        num_epochs=1)
+  features = tf.data.make_one_shot_iterator(dataset).get_next()
+  return features
+
+ranker -> trained model 
+predictions = ranker.predict(input_fn=lambda: predict_input_fn("/tmp/test.tfrecords"))
+x = next(predictions)
+
+"""
