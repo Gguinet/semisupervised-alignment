@@ -124,6 +124,7 @@ def compute_embedding_distance(
     add_query_coord=False,
     bsz=100,
     query_size=10,
+    use_csls = False
 ):
     """
     Use a embedding loss for queries construction and save svmlight file.
@@ -136,7 +137,7 @@ def compute_embedding_distance(
     print("Expected query size: %d" % (query_size * len(idx_src)))
     nn_list = compute_NN_list(
         x_src, x_tgt, idx_src=idx_src, bsz=bsz, nn_size=query_size
-    )
+    ) 
 
     query_id = 0
     file = open(file_name, "wb")
@@ -231,6 +232,7 @@ def compute_binary_distance(
     max_relevance=2,
     bsz=100,
     query_size=10,
+    use_csls = False
 ):
     """
     Use a 0-1 loss for queries construction and save svmlight file
@@ -243,7 +245,7 @@ def compute_binary_distance(
     print("Expected query size: %d" % (query_size * len(idx_src)))
     nn_list = compute_NN_list(
         x_src, x_tgt, idx_src=idx_src, bsz=bsz, nn_size=query_size
-    )
+    ) if use_csls == False else compute_csls_list(x_src, x_tgt, lexicon=lexicon, idx_src=idx_src)
 
     query_id = 0
     file = open(file_name, "wb")
@@ -255,7 +257,7 @@ def compute_binary_distance(
         x_src_penalty, x_tgt_penalty = compute_csls_coord(
             x_src, x_tgt, lexicon, lexicon_size=-1, k=k_csls, bsz=1024
         )
-
+    query_count = len(idx_src)
     for ind_src, i in enumerate(idx_src):
 
         # Whether or not to add ground truth words in each query.
@@ -264,11 +266,16 @@ def compute_binary_distance(
         # necessary
         if discard_empty_query == True:
             # Do not write queries with no relevent labels with (at the moment) the NN method 
-            if lexicon[i] in nn_list[i]:
+            test = False 
+            for e in lexicon[i]:
+                if e in nn_list[i]:
+                    test = True
+            if test:
                 query_list = nn_list[i]
                 discard_curr_query = False
             else:
                 discard_curr_query = True
+                query_count -=1
 
         elif testing_query == True:
             
@@ -325,7 +332,7 @@ def compute_binary_distance(
                     file.write(line)
 
         query_id += 1
-
+    print("Query kept {} out of {}".format(query_count,len(idx_src)))
     file.close()
 
 

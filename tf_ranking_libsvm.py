@@ -59,6 +59,9 @@ flags.DEFINE_float(
     0.5,
     "The weight for the secondary loss in " "multi-objective learning.",
 )
+flags.DEFINE_bool(
+    "use_document_interactions", False,
+    "If true, uses cross-document interactions to generate scores.")
 
 FLAGS = flags.FLAGS
 

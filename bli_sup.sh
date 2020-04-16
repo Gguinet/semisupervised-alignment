@@ -1,5 +1,3 @@
-#!/bin/usr/env sh
-
 set -e
 s1=$1
 t1=$2
@@ -15,20 +13,16 @@ if [ ! -d data/ ]; then
 fi
 
 
-if [ ! -d res/${s2}-${t2}/ ]; then
-  mkdir -p res/${s2}-${t2};
+if [ ! -d res_sup/${s2}-${t2}/ ]; then
+  mkdir -p res_sup/${s2}-${t2};
 fi
 
-if [ ! -d query/${s1}-${t1}/ ]; then
-  mkdir -p query/${s1}-${t1};
+if [ ! -d query_sup/${s1}-${t1}/ ]; then
+  mkdir -p query_sup/${s1}-${t1};
 fi
-if [ ! -d query/${s2}-${t2}/ ]; then
-  mkdir -p query/${s2}-${t2};
+if [ ! -d query_sup/${s2}-${t2}/ ]; then
+  mkdir -p query_sup/${s2}-${t2};
 fi
-
-"$(head -10000 ${dico_train})" > data/${s1}-${t1}.0-10000.txt
-dico_train=data/${s1}-${t1}.0-10000.txt
-echo "New dico_train done"
 
 dico_train=data/${s1}-${t1}.0-5000.txt
 if [ ! -f "${dico_train}" ]; then
@@ -36,15 +30,21 @@ if [ ! -f "${dico_train}" ]; then
   wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
 fi
 
-dico_valid=data/${s1}-${t1}.5000-6500.txt
-if [ ! -f "${dico_valid}" ]; then
-  DICO=$(basename -- "${dico_valid}")
-  wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
-fi
-
 dico_test=data/${s2}-${t2}.0-5000.txt
 if [ ! -f "${dico_test}" ]; then
   DICO=$(basename -- "${dico_test}")
+  wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
+fi
+
+dico_val1=data/${s1}-${t1}.5000-6500.txt
+if [ ! -f "${dico_val1}" ]; then
+  DICO=$(basename -- "${dico_val1}")
+  wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
+fi
+
+dico_val2=data/${s2}-${t2}.5000-6500.txt
+if [ ! -f "${dico_val2}" ]; then
+  DICO=$(basename -- "${dico_val2}")
   wget -c "https://dl.fbaipublicfiles.com/arrival/dictionaries/${DICO}" -P data/
 fi
 
@@ -74,29 +74,33 @@ fi
 
 #Aligning embeddings
 
-output_src1=alignment/${s1}-${t1}/${s1}.vec
-output_tgt1=alignment/${s1}-${t1}/${t1}.vec
+output_src1=alignment_sup/${s1}-${t1}/${s1}.vec
+output_tgt1=alignment_sup/${s1}-${t1}/${t1}.vec
 
-if [ ! -d alignment/${s1}-${t1}/ ]; then
-  mkdir -p alignment/${s1}-${t1}
-  python3 unsup_align.py --model_src "${src_emb1}" --model_tgt "${tgt_emb1}" \
-    --lexicon "${dico_train}" --output_src "${output_src1}" --output_tgt "${output_tgt1}" ;
+if [ ! -d alignment_sup/${s1}-${t1}/ ]; then
+  mkdir -p alignment_sup/${s1}-${t1}
+  python3 align.py --src_emb "${src_emb1}" --tgt_emb "${tgt_emb1}" \
+                   --center true --dico_train "${dico_train}" --dico_test "${dico_val1}" \
+                   --output_src "${output_src1}" --output_tgt "${output_tgt1}" \
+                   --sgd true;
 fi
 
-output_src2=alignment/${s2}-${t2}/${s2}.vec
-output_tgt2=alignment/${s2}-${t2}/${t2}.vec
+output_src2=alignment_sup/${s2}-${t2}/${s2}.vec
+output_tgt2=alignment_sup/${s2}-${t2}/${t2}.vec
 
-if [ ! -d alignment/${s2}-${t2}/ ]; then
-  mkdir -p alignment/${s2}-${t2}
-  python3 unsup_align.py --model_src "${src_emb2}" --model_tgt "${tgt_emb2}" \
-    --lexicon "${dico_test}" --output_src "${output_src2}" --output_tgt "${output_tgt2}"  ;
+if [ ! -d alignment_sup/${s2}-${t2}/ ]; then
+  mkdir -p alignment_sup/${s2}-${t2}
+  python3 align.py --src_emb "${src_emb2}" --tgt_emb "${tgt_emb2}" \
+                   --center true --dico_train "${dico_test}" --dico_test "${dico_val2}" \
+                   --output_src "${output_src2}" --output_tgt "${output_tgt2}" \
+                   --sgd true;
 fi
 
 
 # Query Extraction 
 # For the testing, we do not force the presence of ground truth in each query
 
-train_path=query/${s1}-${t1}/train
+train_path=query_sup/${s1}-${t1}/train
 if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${train_path}" --dico "${dico_train}" --query_size 10 \
@@ -104,7 +108,7 @@ if [ ! -f "${train_path}" ]; then
         --testing_query false --add_word_coord false --add_query_coord false ;
 fi
 
-test_path=query/${s2}-${t2}/test
+test_path=query_sup/${s2}-${t2}/test
 if [ ! -f "${test_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src2}" --tgt_emb "${output_tgt2}" \
         --filename "${test_path}" --dico "${dico_test}" --query_size 10 \
@@ -117,11 +121,8 @@ fi
 # BLI Induction
 #queryy_full
 
-output_dir1=res/${s2}-${t2}/${t1}/approx_ndcg_loss_group_2
+output_dir1=res_sup/${s2}-${t2}/${t1}/approx_ndcg_loss_group_2
 
 python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${test_path}" \
     --test_path "${test_path}" --output_dir "${output_dir1}" --group_size 2 --loss "approx_ndcg_loss" \
     --num_train_steps 100000 --num_features 11 --query_relevance_type 'binary' --query_size 10
-    
-
-

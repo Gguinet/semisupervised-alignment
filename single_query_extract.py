@@ -79,6 +79,18 @@ parser.add_argument(
     help="Whether to add to query coord word embedding",
 )
 parser.add_argument(
+    "--discard_empty_query",
+    type=str2bool,
+    default=True,
+    help="Whether to remove query without the right traduction or not",
+)
+parser.add_argument(
+    "--use_csls",
+    type=str2bool,
+    default=False,
+    help="Whether to use CSLS distance or CosineSim",
+)
+parser.add_argument(
     "--add_query_coord",
     type=str2bool,
     default=True,
@@ -116,8 +128,10 @@ query_extractor(
     add_csls_coord=params.add_csls_coord,
     k_csls=params.k_csls,
     testing_query=params.testing_query,
+    discard_empty_query=params.discard_empty_query,
     add_word_coord=params.add_word_coord,
     add_query_coord=params.add_query_coord,
     query_size=params.query_size,
+    use_csls=params.use_csls
 )
 print("Query file extracted")
