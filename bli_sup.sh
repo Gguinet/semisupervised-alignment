@@ -79,9 +79,9 @@ output_tgt1=alignment_sup/${s1}-${t1}/${t1}.vec
 
 if [ ! -d alignment_sup/${s1}-${t1}/ ]; then
   mkdir -p alignment_sup/${s1}-${t1}
-  python3 align.py --src_emb "${src_emb1}" --tgt_emb "${tgt_emb1}" \
+  python3 align.py --src_emb "${tgt_emb1}" --tgt_emb "${src_emb1}" \
                    --dico_train "${dico_train}" --dico_test "${dico_val1}" \
-                   --output_src "${output_src1}" --output_tgt "${output_tgt1}" ;
+                   --output_src "${output_tgt1}" --output_tgt "${output_src1}" ;
 fi
 
 output_src2=alignment_sup/${s2}-${t2}/${s2}.vec
@@ -89,9 +89,9 @@ output_tgt2=alignment_sup/${s2}-${t2}/${t2}.vec
 
 if [ ! -d alignment_sup/${s2}-${t2}/ ]; then
   mkdir -p alignment_sup/${s2}-${t2}
-  python3 align.py --src_emb "${src_emb2}" --tgt_emb "${tgt_emb2}" \
+  python3 align.py --src_emb "${tgt_emb2}" --tgt_emb "${src_emb2}" \
                    --dico_train "${dico_test}" --dico_test "${dico_val2}" \
-                   --output_src "${output_src2}" --output_tgt "${output_tgt2}" ;
+                   --output_src "${output_tgt2}" --output_tgt "${output_src2}" ;
 fi
 
 
@@ -103,7 +103,7 @@ if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${train_path}" --dico "${dico_train}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
-        --testing_query false --add_word_coord false --add_query_coord false ;
+        --testing_query false --add_word_coord false --add_query_coord false --discard_empty_query false;
 fi
 
 test_path=query_sup/${s2}-${t2}/test
