@@ -80,9 +80,8 @@ output_tgt1=alignment_sup/${s1}-${t1}/${t1}.vec
 if [ ! -d alignment_sup/${s1}-${t1}/ ]; then
   mkdir -p alignment_sup/${s1}-${t1}
   python3 align.py --src_emb "${src_emb1}" --tgt_emb "${tgt_emb1}" \
-                   --center true --dico_train "${dico_train}" --dico_test "${dico_val1}" \
-                   --output_src "${output_src1}" --output_tgt "${output_tgt1}" \
-                   --sgd true;
+                   --dico_train "${dico_train}" --dico_test "${dico_val1}" \
+                   --output_src "${output_src1}" --output_tgt "${output_tgt1}" ;
 fi
 
 output_src2=alignment_sup/${s2}-${t2}/${s2}.vec
@@ -91,9 +90,8 @@ output_tgt2=alignment_sup/${s2}-${t2}/${t2}.vec
 if [ ! -d alignment_sup/${s2}-${t2}/ ]; then
   mkdir -p alignment_sup/${s2}-${t2}
   python3 align.py --src_emb "${src_emb2}" --tgt_emb "${tgt_emb2}" \
-                   --center true --dico_train "${dico_test}" --dico_test "${dico_val2}" \
-                   --output_src "${output_src2}" --output_tgt "${output_tgt2}" \
-                   --sgd true;
+                   --dico_train "${dico_test}" --dico_test "${dico_val2}" \
+                   --output_src "${output_src2}" --output_tgt "${output_tgt2}" ;
 fi
 
 

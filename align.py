@@ -99,10 +99,10 @@ def proj_spectral(R):
 
 # load word embeddings
 words_tgt, x_tgt = load_vectors(
-    params.tgt_emb, maxload=params.maxload, center=params.center
+    params.tgt_emb, maxload=params.maxload, center=True
 )
 words_src, x_src = load_vectors(
-    params.src_emb, maxload=params.maxload, center=params.center
+    params.src_emb, maxload=params.maxload, center=True
 )
 
 # load validation bilingual lexicon
@@ -142,7 +142,7 @@ for it in range(0, niter + 1):
     if lr < 1e-4:
         break
 
-    if params.sgd:
+    if True:
         indices = np.random.choice(Y_tgt.shape[0], size=params.batchsize, replace=False)
         f, df = rcsls(Y_tgt[indices, :], X_src[indices, :], Z_tgt, Z_src, R, params.knn)
     else:
@@ -157,7 +157,7 @@ for it in range(0, niter + 1):
     print("[it=%d] f = %.4f" % (it, f))
     sys.stdout.flush()
 
-    if f > fold and it > 0 and not params.sgd:
+    if f > fold and it > 0 and not True:
         lr /= 2
         f, R = fold, Rold
 
@@ -178,7 +178,7 @@ print("[final] NN = %.4f - Coverage = %.4f" % (nnacc, len(src2tgt) / lexicon_siz
 if params.output_tgt != "":
     print("Saving all aligned vectors at %s" % params.output)
     words_full, x_full = load_vectors(
-        params.tgt_emb, maxload=params.maxload, center=params.center, verbose=False
+        params.tgt_emb, maxload=params.maxload, center=True, verbose=False
     )
     x = np.dot(x_full, R.T)
     x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
@@ -187,7 +187,7 @@ if params.output_tgt != "":
 if params.output_src != "":
     print("Saving all source vectors at %s" % params.output)
     words_full, x_full = load_vectors(
-        params.src_emb, maxload=params.maxload, center=params.center, verbose=False
+        params.src_emb, maxload=params.maxload, center=True, verbose=False
     )
     x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
     save_vectors(params.output_src, x, words_full)
