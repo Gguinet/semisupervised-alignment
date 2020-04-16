@@ -28,7 +28,11 @@ parser.add_argument("--dico_train", type=str, default="", help="train dictionary
 parser.add_argument("--dico_test", type=str, default="", help="validation dictionary")
 
 parser.add_argument(
-    "--output", type=str, default="", help="where to save aligned embeddings"
+    "--output_src", type=str, default="", help="where to save src embeddings"
+)
+
+parser.add_argument(
+    "--output_tgt", type=str, default="", help="where to save tgt aligned embeddings"
 )
 
 parser.add_argument(
@@ -37,7 +41,7 @@ parser.add_argument(
 parser.add_argument(
     "--maxneg",
     type=int,
-    default=10000,
+    default=200000,
     help="Maximum number of negatives for the Extended RCSLS",
 )
 parser.add_argument(
@@ -95,10 +99,10 @@ def proj_spectral(R):
 
 # load word embeddings
 words_tgt, x_tgt = load_vectors(
-    params.tgt_emb, maxload=params.maxload, center=params.center
+    params.tgt_emb, maxload=params.maxload, center=True
 )
 words_src, x_src = load_vectors(
-    params.src_emb, maxload=params.maxload, center=params.center
+    params.src_emb, maxload=params.maxload, center=True
 )
 
 # load validation bilingual lexicon
@@ -121,9 +125,12 @@ Z_src = x_src[: params.maxneg, :]
 Z_tgt = x_tgt[: params.maxneg, :]
 
 # initialization:
-R = procrustes(X_src, Y_tgt)
+#R = procrustes(X_src, Y_tgt)
+R = procrustes(Y_tgt, X_src)
+#nnacc = compute_nn_accuracy(
+    #np.dot(x_src, R.T), x_tgt, src2tgt)
 nnacc = compute_nn_accuracy(
-    np.dot(x_src, R.T), x_tgt, src2tgt)
+    x_src,np.dot(x_tgt, R.T), src2tgt)
 print("[init -- Procrustes] NN: %.4f" % (nnacc))
 sys.stdout.flush()
 
@@ -135,11 +142,11 @@ for it in range(0, niter + 1):
     if lr < 1e-4:
         break
 
-    if params.sgd:
-        indices = np.random.choice(X_src.shape[0], size=params.batchsize, replace=False)
-        f, df = rcsls(X_src[indices, :], Y_tgt[indices, :], Z_src, Z_tgt, R, params.knn)
+    if True:
+        indices = np.random.choice(Y_tgt.shape[0], size=params.batchsize, replace=False)
+        f, df = rcsls(Y_tgt[indices, :], X_src[indices, :], Z_tgt, Z_src, R, params.knn)
     else:
-        f, df = rcsls(X_src, Y_tgt, Z_src, Z_tgt, R, params.knn)
+        f, df = rcsls(Y_tgt, X_src, Z_tgt, Z_src, R, params.knn)
 
     if params.reg > 0:
         R *= 1 - lr * params.reg
@@ -150,7 +157,7 @@ for it in range(0, niter + 1):
     print("[it=%d] f = %.4f" % (it, f))
     sys.stdout.flush()
 
-    if f > fold and it > 0 and not params.sgd:
+    if f > fold and it > 0 and not True:
         lr /= 2
         f, R = fold, Rold
 
@@ -158,22 +165,29 @@ for it in range(0, niter + 1):
 
     if (it > 0 and it % 10 == 0) or it == niter:
         nnacc = compute_nn_accuracy(
-            np.dot(x_src, R.T), x_tgt, src2tgt)
+                    x_src,np.dot(x_tgt, R.T), src2tgt)
         print(
             "[it=%d] NN = %.4f - Coverage = %.4f"
             % (it, nnacc, len(src2tgt) / lexicon_size)
         )
 
 nnacc = compute_nn_accuracy(
-    np.dot(x_src, R.T), x_tgt, src2tgt)
+    x_src,np.dot(x_tgt, R.T), src2tgt)
 print("[final] NN = %.4f - Coverage = %.4f" % (nnacc, len(src2tgt) / lexicon_size))
 
-if params.output != "":
+if params.output_tgt != "":
     print("Saving all aligned vectors at %s" % params.output)
     words_full, x_full = load_vectors(
-        params.src_emb, maxload=params.maxload, center=params.center, verbose=False
+        params.tgt_emb, maxload=params.maxload, center=True, verbose=False
     )
     x = np.dot(x_full, R.T)
     x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
-    save_vectors(params.output, x, words_full)
-    save_matrix(params.output + "-mat", R)
+    save_vectors(params.output_tgt, x, words_full)
+
+if params.output_src != "":
+    print("Saving all source vectors at %s" % params.output)
+    words_full, x_full = load_vectors(
+        params.src_emb, maxload=params.maxload, center=True, verbose=False
+    )
+    x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
+    save_vectors(params.output_src, x, words_full)
