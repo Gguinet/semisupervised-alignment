@@ -26,10 +26,6 @@ if [ ! -d query/${s2}-${t2}/ ]; then
   mkdir -p query/${s2}-${t2};
 fi
 
-"$(head -10000 ${dico_train})" > data/${s1}-${t1}.0-10000.txt
-dico_train=data/${s1}-${t1}.0-10000.txt
-echo "New dico_train done"
-
 dico_train=data/${s1}-${t1}.0-5000.txt
 if [ ! -f "${dico_train}" ]; then
   DICO=$(basename -- "${dico_train}")
