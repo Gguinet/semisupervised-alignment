@@ -179,6 +179,36 @@ def load_lexicon(filename: str,
         print("Coverage of source vocab: %.4f" % (coverage))
     return lexicon, float(len(vocab))
 
+def load_lexicon_reverse(filename: str,
+                words_src: List[str],
+                words_tgt: List[str],
+                verbose: bool = True) -> Tuple[Dict,float]:
+    """Creates a lexicon (mapping) from one language to another.
+    Args:
+        filename: Language 1 & 2 to compute 
+        words_src: Words from language 1
+        words_tgt: Words from language 2
+        verbose: Verbose parameter
+    Returns:
+        lexicon: Mapping from L1 to L2
+        float(len(vocab)): Size of our vocabulary
+    Raises:
+
+    """
+    f = io.open(filename, "r", encoding="utf-8")
+    lexicon = collections.defaultdict(set)
+    idx_src, idx_tgt = idx(words_src), idx(words_tgt)
+    vocab = set()
+    for line in f:
+        word_tgt, word_src = line.split()
+        if word_src in idx_src and word_tgt in idx_tgt:
+            lexicon[idx_src[word_src]].add(idx_tgt[word_tgt])
+        vocab.add(word_src)
+    if verbose:
+        coverage = len(lexicon) / float(len(vocab))
+        print("Coverage of source vocab: %.4f" % (coverage))
+    return lexicon, float(len(vocab))
+
 
 def load_pairs(filename: str,
                 idx_src,
@@ -200,6 +230,37 @@ def load_pairs(filename: str,
     tot = 0
     for line in f:
         a, b = line.rstrip().split(" ")
+        tot += 1
+        if a in idx_src and b in idx_tgt:
+            pairs.append((idx_src[a], idx_tgt[b]))
+    if verbose:
+        coverage = (1.0 * len(pairs)) / tot
+        print(
+            "Found pairs for training: %d - Total pairs in file: %d - Coverage of pairs: %.4f"
+            % (len(pairs), tot, coverage)
+        )
+    return pairs
+
+def load_pairs_reverse(filename: str,
+                idx_src,
+                idx_tgt,
+                verbose: bool = True) -> List:
+    """Creates possible pairs from filename, present in the given indexes.
+    Args:
+        filename: Indexes of pairs to check out
+        idx_src: Indexes from language 1
+        idx_tgt: Indexes from language 2
+        verbose: Verbose parameter
+    Returns:
+        pairs: Available pairs
+    Raises:
+
+    """
+    f = io.open(filename, "r", encoding="utf-8")
+    pairs = []
+    tot = 0
+    for line in f:
+        b, a = line.rstrip().split(" ")
         tot += 1
         if a in idx_src and b in idx_tgt:
             pairs.append((idx_src[a], idx_tgt[b]))

@@ -97,7 +97,7 @@ if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${train_path}" --dico "${dico_train}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
-        --testing_query false --add_word_coord false --add_query_coord false ;
+        --testing_query false --add_word_coord false --add_query_coord false --discard_empty_query false;
 fi
 
 test_path=query/${s2}-${t2}/test

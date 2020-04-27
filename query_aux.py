@@ -9,7 +9,7 @@ import io
 import numpy as np
 import pandas as pd
 from sklearn.datasets import dump_svmlight_file
-
+import progressbar
 
 def compute_NN_list(x_src, x_tgt, idx_src, bsz=100, nn_size=10):
     """
@@ -25,6 +25,8 @@ def compute_NN_list(x_src, x_tgt, idx_src, bsz=100, nn_size=10):
         e = min(i + bsz, len(idx_src))
         scores = np.dot(x_tgt, x_src[idx_src[i:e]].T)
         ind = np.argpartition(scores, -nn_size, axis=0)[-nn_size:]
+        #print(scores.shape) #200 000, 100
+        #print(ind.shape) # 10,100
         for j in range(i, e):
             nn_list[idx_src[j]] = list(
                 ind[:, j - i][np.argsort(scores[:, j - i][ind[:, j - i]])]
@@ -86,7 +88,6 @@ def compute_csls_list(x_src, x_tgt, lexicon,idx_src, nn_size = 10,lexicon_size=-
                                                                     lexicon_size=lexicon_size,
                                                                     k=k,
                                                                     bsz=bsz,
-                                                                    nn_size = nn_size,
                                                                     return_similarity=True)
     
     # x_src_penalty and x_tgt_penalty are of shape [number of words,k].
@@ -101,13 +102,15 @@ def compute_csls_list(x_src, x_tgt, lexicon,idx_src, nn_size = 10,lexicon_size=-
     #for each word in source words (meaning the biggest similarity)
     csls_list = dict()   
     for i in range(len(idx_src)):
+        if (i % 1000 == 0):
+            print("Step {}".format(i))
         # For the i-th source word, the csls similarity with each word from target :
         scores = similarities[i,:]
         ind = np.argpartition(scores, -nn_size, axis=0)[-nn_size:]
-        for j in range(i,len(idx_src)):
-            csls_list[idx_src[j]] = list(
-                ind[:, j - i][np.argsort(scores[:, j - i][ind[:, j - i]])]
-            )[::-1]
+        #print(ind.shape) #10,
+        #print(scores.shape) #200 000,
+        csls_list[idx_src[i]] = list(ind[np.argsort(scores[ind])])[::-1]
+
     return csls_list                                                                                                                                                                                                                                                                                                                                              
     
 

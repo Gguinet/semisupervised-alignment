@@ -59,7 +59,7 @@ parser.add_argument("--reg", type=float, default=0.0, help="regularization param
 parser.add_argument("--lr", type=float, default=1.0, help="learning rate")
 parser.add_argument("--niter", type=int, default=10, help="number of iterations")
 parser.add_argument("--sgd", action="store_true", help="use sgd")
-parser.add_argument("--batchsize", type=int, default=10000, help="batch size for sgd")
+parser.add_argument("--batchsize", type=int, default=9000, help="batch size for sgd")
 
 params = parser.parse_args()
 
@@ -98,22 +98,24 @@ def proj_spectral(R):
 ###### MAIN ######
 
 # load word embeddings
-words_tgt, x_tgt = load_vectors(
-    params.tgt_emb, maxload=params.maxload, center=True
-)
 words_src, x_src = load_vectors(
-    params.src_emb, maxload=params.maxload, center=True
+    params.src_emb, maxload=params.maxload, center=False
 )
 
+words_tgt, x_tgt = load_vectors(
+    params.tgt_emb, maxload=params.maxload, center=False
+)
+
+
 # load validation bilingual lexicon
-src2tgt, lexicon_size = load_lexicon(params.dico_test, words_src, words_tgt)
+src2tgt, lexicon_size = load_lexicon_reverse(params.dico_test, words_src, words_tgt)
 
 # word --> vector indices
 idx_src = idx(words_src)
 idx_tgt = idx(words_tgt)
 
 # load train bilingual lexicon
-pairs = load_pairs(params.dico_train, idx_src, idx_tgt)
+pairs = load_pairs_reverse(params.dico_train, idx_src, idx_tgt)
 if params.maxsup > 0 and params.maxsup < len(pairs):
     pairs = pairs[: params.maxsup]
 
@@ -125,13 +127,20 @@ Z_src = x_src[: params.maxneg, :]
 Z_tgt = x_tgt[: params.maxneg, :]
 
 # initialization:
-#R = procrustes(X_src, Y_tgt)
-R = procrustes(Y_tgt, X_src)
-#nnacc = compute_nn_accuracy(
-    #np.dot(x_src, R.T), x_tgt, src2tgt)
+R = procrustes(X_src, Y_tgt)
+#R = procrustes(Y_tgt, X_src)
 nnacc = compute_nn_accuracy(
-    x_src,np.dot(x_tgt, R.T), src2tgt)
-print("[init -- Procrustes] NN: %.4f" % (nnacc))
+    np.dot(x_src, R.T), x_tgt, src2tgt)
+#nnacc = compute_nn_accuracy(
+    #x_src,np.dot(x_tgt, R.T), src2tgt)
+cslsproc = compute_csls_accuracy(
+    np.dot(x_src, R.T), x_tgt, src2tgt)
+#cslsproc = compute_csls_accuracy(
+    #x_src, np.dot(x_tgt, R.T), src2tgt)
+print(
+    "\n NN = %.4f - CSLS = %.4f - Coverage = %.4f"
+    % (nnacc, cslsproc, len(src2tgt) / lexicon_size)
+)
 sys.stdout.flush()
 
 # optimization
@@ -143,10 +152,12 @@ for it in range(0, niter + 1):
         break
 
     if True:
-        indices = np.random.choice(Y_tgt.shape[0], size=params.batchsize, replace=False)
-        f, df = rcsls(Y_tgt[indices, :], X_src[indices, :], Z_tgt, Z_src, R, params.knn)
+        indices = np.random.choice(X_src.shape[0], size=params.batchsize, replace=False)
+        f, df = rcsls(X_src[indices, :], Y_tgt[indices, :], Z_src, Z_tgt, R, params.knn)
+        #indices = np.random.choice(Y_tgt.shape[0], size=params.batchsize, replace=False)
+        #f, df = rcsls(Y_tgt[indices, :], X_src[indices, :], Z_tgt, Z_src, R, params.knn)
     else:
-        f, df = rcsls(Y_tgt, X_src, Z_tgt, Z_src, R, params.knn)
+        f, df = rcsls(X_src, Y_tgt, Z_src, Z_tgt, R, params.knn)
 
     if params.reg > 0:
         R *= 1 - lr * params.reg
@@ -163,31 +174,29 @@ for it in range(0, niter + 1):
 
     fold, Rold = f, R
 
-    if (it > 0 and it % 10 == 0) or it == niter:
+    if (it > 0 and it % 5 == 0) or it == niter:
         nnacc = compute_nn_accuracy(
-                    x_src,np.dot(x_tgt, R.T), src2tgt)
+                    np.dot(x_src, R.T), x_tgt, src2tgt)
+        cslsproc = compute_csls_accuracy(
+                np.dot(x_src, R.T), x_tgt, src2tgt)
         print(
-            "[it=%d] NN = %.4f - Coverage = %.4f"
-            % (it, nnacc, len(src2tgt) / lexicon_size)
+            "[it=%d] NN = %.4f - CSLS = %.4f - Coverage = %.4f"
+            % (it, nnacc, cslsproc,len(src2tgt) / lexicon_size)
         )
 
-nnacc = compute_nn_accuracy(
-    x_src,np.dot(x_tgt, R.T), src2tgt)
-print("[final] NN = %.4f - Coverage = %.4f" % (nnacc, len(src2tgt) / lexicon_size))
-
 if params.output_tgt != "":
-    print("Saving all aligned vectors at %s" % params.output)
-    words_full, x_full = load_vectors(
+    print("Saving all aligned vectors at %s" % params.output_tgt)
+    words_full, x = load_vectors(
         params.tgt_emb, maxload=params.maxload, center=True, verbose=False
     )
-    x = np.dot(x_full, R.T)
     x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
     save_vectors(params.output_tgt, x, words_full)
 
 if params.output_src != "":
-    print("Saving all source vectors at %s" % params.output)
-    words_full, x_full = load_vectors(
+    print("Saving all source vectors at %s" % params.output_src)
+    words_full, x = load_vectors(
         params.src_emb, maxload=params.maxload, center=True, verbose=False
     )
+    x = np.dot(x, R.T)
     x /= np.linalg.norm(x, axis=1)[:, np.newaxis] + 1e-8
     save_vectors(params.output_src, x, words_full)
