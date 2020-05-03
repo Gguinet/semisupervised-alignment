@@ -13,7 +13,7 @@ import collections
 from typing import List, Dict, Tuple
 
 def load_vectors(fname: str,
-                maxload: int = 200000,
+                maxload: int = 10000,
                 norm: bool = True,
                 center: bool = False,
                 verbose: bool = True) -> Tuple[List,np.array]:

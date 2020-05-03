@@ -97,7 +97,9 @@ if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
         --filename "${train_path}" --dico "${dico_train}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
-        --testing_query false --add_word_coord false --add_query_coord false --discard_empty_query false;
+        --testing_query false --add_word_coord false --add_query_coord false \
+        --discard_empty_query false --add_meta_features true --center_meta_features false \
+        --nn_size_meta_features 10;
 fi
 
 test_path=query/${s2}-${t2}/test
@@ -106,18 +108,18 @@ if [ ! -f "${test_path}" ]; then
         --filename "${test_path}" --dico "${dico_test}" --query_size 10 \
         --query_relevance_type 'binary' --add_csls_coord true --k_csls 10 \
         --testing_query true --add_word_coord false --add_query_coord false \
-        --discard_empty_query true ;
+        --discard_empty_query false --add_meta_features true --center_meta_features false \
+        --nn_size_meta_features 10;
 fi
-
     
 # BLI Induction
 #queryy_full
 
-output_dir1=res/${s2}-${t2}/${t1}/approx_ndcg_loss_group_2
+output_dir1=res/${s2}-${t2}/${t1}/approx_ndcg_loss_group_4
 
 python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${test_path}" \
-    --test_path "${test_path}" --output_dir "${output_dir1}" --group_size 2 --loss "approx_ndcg_loss" \
-    --num_train_steps 100000 --num_features 11 --query_relevance_type 'binary' --query_size 10
+    --test_path "${test_path}" --output_dir "${output_dir1}" --group_size 4 --loss "approx_ndcg_loss" \
+    --num_train_steps 100000 --num_features 127 --query_relevance_type 'binary' --query_size 10
     
 
 

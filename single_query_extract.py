@@ -75,13 +75,13 @@ parser.add_argument(
 parser.add_argument(
     "--add_word_coord",
     type=str2bool,
-    default=True,
+    default=False,
     help="Whether to add to query coord word embedding",
 )
 parser.add_argument(
     "--discard_empty_query",
     type=str2bool,
-    default=True,
+    default=False,
     help="Whether to remove query without the right traduction or not",
 )
 parser.add_argument(
@@ -93,9 +93,31 @@ parser.add_argument(
 parser.add_argument(
     "--add_query_coord",
     type=str2bool,
-    default=True,
+    default=False,
     help="Whether to add to query coord query word embedding",
 )
+
+parser.add_argument(
+    "--add_meta_features",
+    type=str2bool,
+    default=True,
+    help="Whether to add to meta-features of the 2 clouds (source and target)",
+)
+
+parser.add_argument(
+    "--center_meta_features",
+    type=str2bool,
+    default=True,
+    help="Whether to add to center the meta-features of the target clouds",
+)
+
+parser.add_argument(
+    "--nn_size_meta_features",
+    type=int,
+    default=10,
+    help="Number of neighbors to use when computing meta-features",
+)
+
 
 params = parser.parse_args()
 
@@ -131,6 +153,9 @@ query_extractor(
     discard_empty_query=params.discard_empty_query,
     add_word_coord=params.add_word_coord,
     add_query_coord=params.add_query_coord,
+    add_meta_features=params.add_meta_features,
+    center_meta_features=params.center_meta_features,
+    nn_size_meta_features=params.nn_size_meta_features,
     query_size=params.query_size,
     use_csls=params.use_csls
 )
