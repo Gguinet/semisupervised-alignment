@@ -266,7 +266,7 @@ def compute_binary_distance(
         #To keep track of progress
         if (query_id%100)==0:
             
-            print("Query number {} done out of {}".format(query_id,query_size * len(idx_src)))
+            print("Query number {} done out of {}".format(query_id,len(idx_src)))
             
     print("Query kept {} out of {}".format(query_count,len(idx_src)))
     file.close()

@@ -9,6 +9,9 @@ import argparse
 from utils import *
 from query_aux import *
 
+#import warnings
+#warnings.filterwarnings("ignore")
+
 # to use bool for parsing
 def str2bool(v):
     """Parse String to bool

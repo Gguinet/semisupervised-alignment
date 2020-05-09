@@ -1,3 +1,6 @@
+# Clone the code (should be done at the beginning)
+#git clone https://github.com/Gguinet/semisupervised-alignement.git
+
 # Install correct version of python and pip
 sudo apt install python
 sudo apt-get install python3-distutils
@@ -14,5 +17,3 @@ python3 -m pip install munkres
 python3 -m pip install scipy
 python3 -m pip install pymfe
 
-# Clone the code
-git clone https://github.com/Gguinet/semisupervised-alignement.git

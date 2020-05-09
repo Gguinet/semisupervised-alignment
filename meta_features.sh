@@ -95,6 +95,9 @@ fi
 
 ################################# Benchmarking #################################
 
+mkdir -p query/${s1}-${t1}/benchmark
+mkdir -p query/${s2}-${t2}/benchmark
+
 train_path=query/${s1}-${t1}/benchmark/train
 if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
@@ -129,6 +132,9 @@ python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${test_pa
 
 #Using meta-features, small size of neigbhors for mf (10), not centered, small NN
 
+mkdir -p query/${s1}-${t1}/mf_small
+mkdir -p query/${s2}-${t2}/mf_small
+
 train_path=query/${s1}-${t1}/mf_small/train
 if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
@@ -162,6 +168,9 @@ python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${test_pa
     
     
 #Using meta-features, big size of neigbhors for mf (100), not centered, small NN
+
+mkdir -p query/${s1}-${t1}/mf_big
+mkdir -p query/${s2}-${t2}/mf_big
 
 train_path=query/${s1}-${t1}/mf_big/train
 if [ ! -f "${train_path}" ]; then
@@ -198,6 +207,9 @@ python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${test_pa
     
 #Using meta-features, big size of neigbhors for mf (100), centered, small NN
 
+mkdir -p query/${s1}-${t1}/mf_big_centered
+mkdir -p query/${s2}-${t2}/mf_big_centered
+
 train_path=query/${s1}-${t1}/mf_big_centered/train
 if [ ! -f "${train_path}" ]; then
     python3 single_query_extract.py --src_emb "${output_src1}" --tgt_emb "${output_tgt1}" \
@@ -231,6 +243,10 @@ python3 tf_ranking_libsvm.py --train_path "${train_path}" --vali_path "${test_pa
     
     
 #Using meta-features, small size of neigbhors for mf (10), centered, small NN
+
+mkdir -p query/${s1}-${t1}/mf_small_centered
+mkdir -p query/${s2}-${t2}/mf_small_centered
+
 
 train_path=query/${s1}-${t1}/mf_small_centered/train
 if [ ! -f "${train_path}" ]; then
