@@ -16,4 +16,3 @@ python3 -m pip install sklearn
 python3 -m pip install munkres
 python3 -m pip install scipy
 python3 -m pip install pymfe
-
