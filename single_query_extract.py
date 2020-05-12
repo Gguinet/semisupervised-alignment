@@ -4,13 +4,14 @@
 # Modifications for Guinet et al. 
 
 import io
+import warnings
 import numpy as np
 import argparse
 from utils import *
 from query_aux import *
 
-#import warnings
-#warnings.filterwarnings("ignore")
+#Disable warnings for Meta-features
+warnings.filterwarnings("ignore")
 
 # to use bool for parsing
 def str2bool(v):
