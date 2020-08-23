@@ -72,11 +72,11 @@ This approach, resulting from the supervised literature then allowed to presume 
 ### add subtitles or schema
 
 Procustes is a method that aligns points if given the correspondences between them (supervised scenario).
-![$\mathbf{X} \in \mathbb{R}^{n \times d}$](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%24%5Cmathbf%7BX%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bn+%5Ctimes+d%7D%24) and $\mathbf{Y} \in \mathbb{R}^{n \times d}$ are the two sets of word embeddings or points and we suppose, as previously said, that we know which point **X** corresponds to which point **Y**. This leads us to solve the following least-square problem of optimization, looking for the **W** matrix performing the alignment [[5]](https://arxiv.org/pdf/1805.11222.pdf):
+![\mathbf{X} \in \mathbb{R}^{n \times d}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathbf%7BX%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bn+%5Ctimes+d%7D) and ![\mathbf{Y} \in \mathbb{R}^{n \times d}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathbf%7BY%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bn+%5Ctimes+d%7D) are the two sets of word embeddings or points and we suppose, as previously said, that we know which point **X** corresponds to which point **Y**. This leads us to solve the following least-square problem of optimization, looking for the **W** matrix performing the alignment [[5]](https://arxiv.org/pdf/1805.11222.pdf):
 
-$$\min _{\mathbf{W} \in \mathbb{R}^{d \times d}}\|\mathbf{X} \mathbf{W}-\mathbf{Y}\|_{2}^{2}$$ 
+![\min _{\mathbf{W} \in \mathbb{R}^{d \times d}}\|\mathbf{X} \mathbf{W}-\mathbf{Y}\|_{2}^{2}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmin+_%7B%5Cmathbf%7BW%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bd+%5Ctimes+d%7D%7D%5C%7C%5Cmathbf%7BX%7D+%5Cmathbf%7BW%7D-%5Cmathbf%7BY%7D%5C%7C_%7B2%7D%5E%7B2%7D)
 We have access to a closed form solution with a cubic complexity. 
-Restraining **W** to the set of orthogonal matrices $\mathcal{O}_{d}$, improves the alignments for two reasons: it limits overfitting by reducing the size of the minimization space and allows to translate the idea of keeping distances and angles, resulting from the similarity in the space structure. The resulting problem is known as Orthogonal Procrustes and it also admits a closed form solution through a singular value decomposition (cubic complexity).
+Restraining **W** to the set of orthogonal matrices ![\mathcal{O}_{d}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathcal%7BO%7D_%7Bd%7D), improves the alignments for two reasons: it limits overfitting by reducing the size of the minimization space and allows to translate the idea of keeping distances and angles, resulting from the similarity in the space structure. The resulting problem is known as Orthogonal Procrustes and it also admits a closed form solution through a singular value decomposition (cubic complexity).
 
 Thus, if their correspondences are known, the translation matrix between two sets of points can be inferred without too much difficulties. The next step leading to unsupervised learning is to discover these point correspondences using Wasserstein distance.
 
@@ -87,9 +87,9 @@ Thus, if their correspondences are known, the translation matrix between two set
 
 In a similar fashion, finding the correct mapping between two sets of word can be done by solving the following minimization problem: 
 
-$$\min _{\mathbf{P} \in \mathcal{P}_{n}}\|\mathbf{X}-\mathbf{P} \mathbf{Y}\|_{2}^{2}$$
+![\min _{\mathbf{P} \in \mathcal{P}_{n}}\|\mathbf{X}-\mathbf{P} \mathbf{Y}\|_{2}^{2}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmin+_%7B%5Cmathbf%7BP%7D+%5Cin+%5Cmathcal%7BP%7D_%7Bn%7D%7D%5C%7C%5Cmathbf%7BX%7D-%5Cmathbf%7BP%7D+%5Cmathbf%7BY%7D%5C%7C_%7B2%7D%5E%7B2%7D)
 
-$\mathcal{P}_{n}$ containing all the permutation matrices, the solution of the minimization, $P_t$ will be an alignment matrix giving away the pair of words. This 1 to 1 mapping can be achieved thanks to the Hungarian algorithm.
+![\mathcal{P}_{n}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathcal%7BP%7D_%7Bn%7D) containing all the permutation matrices, the solution of the minimization, $P_t$ will be an alignment matrix giving away the pair of words. This 1 to 1 mapping can be achieved thanks to the Hungarian algorithm.
 It is equivalent to solve the following linear program: $$\max _{\mathbf{P} \in \mathcal{P}_{n}} \operatorname{tr}\left(\mathbf{X}^{\top} \mathbf{P} \mathbf{Y}\right)$$
 
 The combination of the Procustes- Wasserstein minimization problem is the following: $$\min _{\mathbf{Q} \in \mathcal{O}_{d}} \min _{\mathbf{P} \in \mathcal{P}_{n}}\|\mathbf{X Q}-\mathbf{P} \mathbf{Y}\|_{2}^{2}$$
