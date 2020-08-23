@@ -54,7 +54,7 @@ We will proceed as follows:  Sections ~\ref{sec:state_art} and ~\ref{sec:eval_mt
 
 In this section, we provide a brief overview of unsupervised bilingual alignment methods to learn a mapping between two sets of embeddings. The majority are divided into two stages: the actual alignment and lexicon induction, given the alignment. Even if the lexicon induction is often taken into account when aligning (directly or indirectly, through the loss function), this distinction is useful from a theoretical point of view. 
 
-![](imgs/2020-08-20-nlp/alignement.png)
+![](imgs/alignement.png)
 
 <center>
 <em>
@@ -97,7 +97,7 @@ The combination of the Procustes- Wasserstein minimization problem is the follow
 In order to solve this problem, the approach of [[5]](https://arxiv.org/pdf/1805.11222.pdf) was to use a stochastic optimization algorithm. 
 As solving separately those 2 problems was leading to bad local optima, their choice was to select a smaller batch of size *b*, and perform their minimization algorithm on these sub-samples. The batch is playing the role of anchors points. Combining this with a convex relaxation for an optimal initialization, it leads to the following algorithm:
 
-![](/imgs/2020-08-20-nlp/algo_1.png)
+![](imgs/algo_1.png)
 
 ## Other unsupervised approaches
 
@@ -329,7 +329,7 @@ $$
 $$
 where $\alpha$ is a hyperparameter. 
 
-![](/imgs/2020-08-20-nlp/example_approx_indicator.jpg)
+![](imgs/example_approx_indicator.jpg)
 
 <center>
 <em>
