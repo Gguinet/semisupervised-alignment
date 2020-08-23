@@ -54,7 +54,7 @@ We will proceed as follows:  Sections ~\ref{sec:state_art} and ~\ref{sec:eval_mt
 
 In this section, we provide a brief overview of unsupervised bilingual alignment methods to learn a mapping between two sets of embeddings. The majority are divided into two stages: the actual alignment and lexicon induction, given the alignment. Even if the lexicon induction is often taken into account when aligning (directly or indirectly, through the loss function), this distinction is useful from a theoretical point of view. 
 
-![](/imgs/2020-08-20-nlp/alignement.png)
+![](imgs/2020-08-20-nlp/alignement.png)
 
 <center>
 <em>
