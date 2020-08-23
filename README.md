@@ -72,7 +72,7 @@ This approach, resulting from the supervised literature then allowed to presume 
 ### add subtitles or schema
 
 Procustes is a method that aligns points if given the correspondences between them (supervised scenario).
-$\mathbf{X} \in \mathbb{R}^{n \times d}$ and $\mathbf{Y} \in \mathbb{R}^{n \times d}$ are the two sets of word embeddings or points and we suppose, as previously said, that we know which point **X** corresponds to which point **Y**. This leads us to solve the following least-square problem of optimization, looking for the **W** matrix performing the alignment [[5]](https://arxiv.org/pdf/1805.11222.pdf):
+![$\mathbf{X} \in \mathbb{R}^{n \times d}$](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%24%5Cmathbf%7BX%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bn+%5Ctimes+d%7D%24) and $\mathbf{Y} \in \mathbb{R}^{n \times d}$ are the two sets of word embeddings or points and we suppose, as previously said, that we know which point **X** corresponds to which point **Y**. This leads us to solve the following least-square problem of optimization, looking for the **W** matrix performing the alignment [[5]](https://arxiv.org/pdf/1805.11222.pdf):
 
 $$\min _{\mathbf{W} \in \mathbb{R}^{d \times d}}\|\mathbf{X} \mathbf{W}-\mathbf{Y}\|_{2}^{2}$$ 
 We have access to a closed form solution with a cubic complexity. 
