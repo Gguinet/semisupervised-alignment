@@ -2,16 +2,17 @@
 
 This blog post contains an introduction to Unsupervised Bilingual Alignment and Multilingual Alignment. We also go through the theoretical framework behind Learning to Rank, and discuss how it migh help to produce better alignments in a Semi-Supervised fashion. 
 
-This post was written with [Gauthier Guinet](https://www.linkedin.com/in/gauthier-guinet/) and was initially suppose to explore the impact of learning to rank to Unsupevised Translation.
+This post was written with [Gauthier Guinet](https://www.linkedin.com/in/gauthier-guinet/) and was initially suppose to explore the impact of learning to rank to Unsupervised Translation.
 
 We both hope that this post will serve as a good introduction to anyone interested in this topic.
 
 #Introduction
 
 <p align="center">
-  <img width="150" height="150" src="imgs/img_blog_1.png">
+  <img width="" height="150" src="imgs/img_blog_1.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -22,9 +23,10 @@ Caption
 Word vectors are conceived to synthesize and quantify semantic nuances, using a few hundred coordinates. These are generally used in downstream tasks to improve generalization when the amount of data is scarce. The widespread use and successes of these "word embeddings" in monolingual tasks has inspired further research on the induction of multilingual word embeddings for two or more languages in the same vector space. 
 
 <p align="center">
-  <img width="250" height="190" src="imgs/img_blog_2.png">
+  <img width="" height="190" src="imgs/img_blog_2.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -35,9 +37,10 @@ Caption
 The starting point was the discovery [[4]](https://papers.nips.cc/paper/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf) that word embedding spaces have similar structures across languages, even when considering distant language pairs like English and Vietnamese. More precisely, two sets of pre-trained vectors in different languages can be aligned to some extent: good word translations can be produced through a simple linear mapping between the two sets of embeddings. As an example, learning a direct mapping between Italian and Portuguese leads to a word translation accuracy of 78.1% with a nearest neighbor (NN) criterion.
 
 <p align="center">
-  <img width="250" height="190" src="imgs/img_blog_3.png">
+  <img width="" height="190" src="imgs/img_blog_3.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -49,21 +52,19 @@ Embeddings of translations and words with similar meaning are close (geometrical
 The simplest way to evaluate the result is the Bilingual Lexicon Induction (BLI) criterion, which designs the percentage of the dictionary that can be correctly induced. 
 Thus, BLI is often the first step towards several downstream tasks such as Part-Of-Speech (POS) tagging, parsing, document classification, language genealogy analysis or (unsupervised) machine translation.
 
-Frequently, these common representations are learned through a two-step process, whether in a bilingual or multilingual setting. First, monolingual word representations are learned over large portions of text; these pre-formed representations are actually available for several languages and are widely used, such as the Fasttext Wikipedia vectors used in this work. Second, a correspondence between languages is learned in three ways: in a supervised manner if parallel dictionaries or data are available to be used for supervisory purposes, with minimal supervision, for example by using only identical strings, or in a completely unsupervised manner.
+Frequently, these common representations are learned through a two-step process, whether in a bilingual or multilingual setting. First, monolingual word representations are learned over large portions of text; these pre-formed representations are actually available for several languages and are widely used, such as the Fasttext Wikipedia. Second, a correspondence between languages is learned in three ways: in a supervised manner if parallel dictionaries or data are available to be used for supervisory purposes, with minimal supervision, for example by using only identical strings, or in a completely unsupervised manner.
 
-### image example of fasttext + add reference
-
-It is common practice in the literature on the subject to separate these two steps and not to address them simultaneously in a paper. Indeed, measuring the efficiency of the algorithm would lose its meaning if the corpus of vectors is not identical at the beginning. We will therefore use open-source data from Facebook containing embeddings of several dozen languages computed using Wikipedia data. The fact that the underlying text corpus is identical also helps to reinforce the isomorphic character of the point clusters.
-
-### add reference to the facebook paper
+It is common practice in the literature on the subject to separate these two steps and not to address them simultaneously in a paper. Indeed, measuring the efficiency of the algorithm would lose its meaning if the corpus of vectors is not identical at the beginning. 
 
 Concerning the second point, although three different approaches exist, they are broadly based on the same ideas: the goal is to identify a subset of points that are then used as anchors points to achieve alignment. In the supervised approach, these are the words for which the translation is available. In the semi-supervised approach, we will gradually try to enrich the small initial corpus to have more and more anchor points. The non-supervised approach differs because there is no parallel corpus or dictionary between the two languages. The subtlety of the algorithms will be to release a potential dictionary and then to enrich it progressively. 
 
 We will focus in the following work on this third approach. Although it is a less frequent scenario, it is of great interest for several reasons. First of all, from a theoretical point of view, it provides a practical answer to a very interesting problem of information theory: given a set of texts in a totally unknown language, what information can we retrieve? The algorithms we chose to implement contrast neatly with the classical approach used until now. Finally, for very distinct languages or languages that are no longer used, it is true that the common corpus can be very thin. 
 
-Many developments have therefore taken place in recent years in this field of unsupervised bilingual lexicon induction. One of the recent discoveries, which pushed us to do this project, is the idea that using information from other languages during the training process helps improve translating language pairs. We came across this idea while searching for multi-alignment of languages instead of bi-alignment. 
+Many developments have therefore taken place in recent years in this field of unsupervised bilingual lexicon induction. One of the recent discoveries is the idea that using information from other languages during the training process helps improve translating language pairs. 
 
 ### add image of informations between 3 different languages
+
+--- a reecrire ---
 
 We chose to approach the problem in a different way, keeping an unsupervised alignment basis however.  We asked ourselves to what extent we could integrate the knowledge of a given set of languages when learning a new one, without having parallel data for the latter. The scenario of multi-alignment unsupervised assumes that there is no parallel data for all language pairs. We think it is more realistic and useful to assume that we do not have this data only for the last language. 
 
@@ -77,16 +78,17 @@ In summary, this paper make the following main contributions:
 
 We will proceed as follows:  Sections ~\ref{sec:state_art} and ~\ref{sec:eval_mtri} will outline  the state of the art and the different techniques used for unsupervised learning in this context. In particular, we will explain the Wasserstein Procustes approach for bilingual and multi alignment. We then emphasize the lexicon induction given the alignment. Section ~\ref{sec:ltr} presents the Learning to Rank key concepts alongside the TensorFlow framework used in our main algorithm. Section ~\ref{sec:semi_sup} describes our program, the different subtleties and the key parameters. Finally, Section ~\ref{sec:results} presents the experimental results we obtained.
 
-%Finally, Section ~\ref{sec:software} highlights software resources that accompany this text. 
+--- END a reecrire ---
 
 # Unsupervised Bilingual Alignement
 
 In this section, we provide a brief overview of unsupervised bilingual alignment methods to learn a mapping between two sets of embeddings. The majority are divided into two stages: the actual alignment and lexicon induction, given the alignment. Even if the lexicon induction is often taken into account when aligning (directly or indirectly, through the loss function), this distinction is useful from a theoretical point of view. 
 
 <p align="center">
-  <img width="300" height="460" src="imgs/alignement.png">
+  <img width="" height="" src="imgs/alignement.png">
 </p>
 
+<br>
 <center>
 <em>
 Word embeddings alignment (in dimension 2).
@@ -95,15 +97,16 @@ Word embeddings alignment (in dimension 2).
 <br/>
 
 Historically, the problem of word vector alignment has been formulated as as a quadratic problem.
-This approach, resulting from the supervised literature then allowed to presume the absence of lexicon without modifying to much the framework. That is why we will deal with it first in what follows. 
+This approach, resulting from the supervised literature then allowed to presume the absence of lexicon without modifying too much the framework. That is why we will deal with it first in what follows. 
 
 
-##Orthogonal Procrustes Problem
+## Orthogonal Procrustes Problem
 
 <p align="center">
   <img width="500" height="" src="imgs/img_blog_4.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -122,6 +125,7 @@ Procustes is a method that aligns points if given the correspondences between th
   <img width="" height="" src="imgs/gif_blog_1.gif">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -170,7 +174,7 @@ In order to solve this problem, the approach of [[5]](https://arxiv.org/pdf/1805
 As solving separately those 2 problems was leading to bad local optima, their choice was to select a smaller batch of size *b*, and perform their minimization algorithm on these sub-samples. The batch is playing the role of anchors points. Combining this with a convex relaxation for an optimal initialization, it leads to the following algorithm:
 
 <p align="center">
-  <img width="300" height="360" src="imgs/algo_1.png">
+  <img width="" height="" src="imgs/algo_1.png">
 </p>
 
 ## Other unsupervised approaches
@@ -183,6 +187,7 @@ Other approaches exist but they are currently less efficient than the one descri
   <img width="" height="190" src="imgs/img_blog_5.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -208,6 +213,7 @@ where the cost ![c(\mathbf{x}, T(\mathbf{x}))](https://render.githubusercontent.
   <img width="300" height="300" src="imgs/img_blog_6.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -258,7 +264,7 @@ On the other hand, the loss of the generator is:
 </p>
     
 For every input sample, the discriminator and the mapping matrix W are trained successively with stochastic gradient updates to respectively minimize ![\mathcal{L}_{W}$ and $\mathcal{L}_{D}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathcal%7BL%7D_%7BW%7D%24+and+%24%5Cmathcal%7BL%7D_%7BD%7D) . 
-Yet, papers [[10]](https://arxiv.org/pdf/1710.04087.pdf) on the subject show that, although innovative, this framework is more useful as a pre-training for the classical model than as a full-fledged algorithm. Hence our choice not to explore in more details this avenue. 
+Yet, papers [[10]](https://arxiv.org/pdf/1710.04087.pdf) on the subject show that, although innovative, this framework is more useful as a pre-training for the classical model than as a full-fledged algorithm. 
 
 ## Multilingual alignment
 
@@ -272,6 +278,7 @@ Thus, when it comes to aligning multiple languages together, two principle appro
   <img width="" height="" src="imgs/img_blog_7.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -312,6 +319,7 @@ Nearest neighbors are by nature asymmetric: y being a K-NN of x does not imply t
   <img width="250" height="190" src="imgs/img_blog_8.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -355,14 +363,19 @@ However, we wanted to keep the unsupervised framework, hence the idea of trainin
 
 # Learning to Rank
 
+--- a reecrire ---
+
 A ranking problem is defined as the task of ordering a set of items to maximize the utility of the entire set. Such a problem is widely studied in several domains such as Information Retrieval. For example, on Gmail, given a query "order amazon" and a list of received email, the task would be to send an ordered list of received email with the first one being the one we want to see. 
 
 Another exaple would be on any e-commerce website, where given a query "iphone black case" and the list of products available, the return list should be ordered by probability of getting purchased. With these examples, one can start understanding why a ranking problem is different than a classification or a regression task. While their goal is to predict a class or a value, the ranking task needs to order an entire list, such that, the higher you are the more relevant you should be.
+
+--- END a reecrire ---
 
 <p align="center">
   <img width="400" height="300" src="imgs/img_blog_9.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -395,6 +408,8 @@ One first et very important note is how ![f](https://render.githubusercontent.co
 * We consider ![f](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+f) as a *univariate* scoring function, meaning that it can be decomposed into a per-item scoring function such as ![f(X)_{i} := u(x_i)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+f%28X%29_%7Bi%7D+%3A%3D+u%28x_i%29) with ![u : x \mapsto \mathbb{R}_{+}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+u+%3A+x+%5Cmapsto+%5Cmathbb%7BR%7D_%7B%2B%7D). We will have ![f(X) = [u(x_0), ... , u(x_n)]](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+f%28X%29+%3D+%5Bu%28x_0%29%2C+...+%2C+u%28x_n%29%5D). 
 * We consider ![f](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+f) as a *multivariate* scoring function, meaning that each item is scored relatively to every other items in the set, with ![f : X \mapsto \mathbb{R}^{n}_{+}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+f+%3A+X+%5Cmapsto+%5Cmathbb%7BR%7D%5E%7Bn%7D_%7B%2B%7D). This means that changing one item could change the score of the rest of the set.
 
+### add image
+
 While the first option is simpler to implement, the second one is much closer to the reality, as the relevance of an item often depends on the distribution its in. For example, the relevance of a item on an e-commerce query will always depend on what the website offers you next to it.
 
 We now have to define some metrics in order to judge how good a ranking is. We start by defining the *Discounted Cumulativ Gain* (DCG) of a list:
@@ -411,9 +426,10 @@ where:
 * ![k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+k) is how much we want to go deep into the list. A low value of ![k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+k) means that we want to focus on how well ranked the start of our list is.
 
 <p align="center">
-  <img width="450" height="300" src="imgs/img_blog_10.png">
+  <img width="" height="300" src="imgs/img_blog_10.png">
 </p>
 
+<br>
 <center>
 <em>
 Caption
@@ -520,6 +536,8 @@ We can now define our differentiable version of the DCG metric by using these ap
 
 # RUBI: Ranked Unsupervised Bilingual Induction
 
+--- a reecrire ---
+
 **Motivations:** Let's describe more precisely the functioning of our algorithm, denoted RUBI, although already mentioned in previous sections. Two points guided our approach:
 
 * From a linguistic point of view, there is obviously a learning to learn phenomenon for languages. We observe that by assimilating the structure of the new language, its grammar and vocabulary to one of the already known languages, it is easier for us to create links that help learning.
@@ -532,6 +550,8 @@ It is the search for these links that motivates us and we are convinced that the
 * **Prediction:**  We thus have at the end of the training an algorithm taking as input a vocabulary word, in the form of an embedding as well as a list of potential translations. The output of our algorithm is the list sorted according to the learned criteria of these possible translations, the first word corresponding to the most probable translation and so on. We first perform the alignment of languages A and B using again the Procustes-Wasserstein algorithm. In a second step, thanks to the learning to rank, we perform the lexicon induction step. 
 
 Finally, a final conceptual point is important to raise. In the context of the CSLS criterion, we have seen in the above that its use after alignment has improved. However, actually incorporating it in the alignment phase by modifying the loss function has allowed for greater consistency and a second improvement. However, these two changes were separated. Yet, the learning to rank framework is quite different. The main reason is the non-linearity resulting from deep-learning, unlike CSLS. The global optimization is therefore much more complex and does not allow a relaxation to get back to a convex case. However, it is an area for improvement to be considered very seriously for future work. 
+
+--- a reecrire ---
 
 # Results
 
