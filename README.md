@@ -8,13 +8,42 @@ We both hope that this post will serve as a good introduction to anyone interest
 
 #Introduction
 
+<p align="center">
+  <img width="150" height="150" src="imgs/img_blog_1.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
+
 Word vectors are conceived to synthesize and quantify semantic nuances, using a few hundred coordinates. These are generally used in downstream tasks to improve generalization when the amount of data is scarce. The widespread use and successes of these "word embeddings" in monolingual tasks has inspired further research on the induction of multilingual word embeddings for two or more languages in the same vector space. 
 
-### add simple image 
+<p align="center">
+  <img width="250" height="190" src="imgs/img_blog_2.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 The starting point was the discovery [[4]](https://papers.nips.cc/paper/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf) that word embedding spaces have similar structures across languages, even when considering distant language pairs like English and Vietnamese. More precisely, two sets of pre-trained vectors in different languages can be aligned to some extent: good word translations can be produced through a simple linear mapping between the two sets of embeddings. As an example, learning a direct mapping between Italian and Portuguese leads to a word translation accuracy of 78.1% with a nearest neighbor (NN) criterion.
 
-### add image example of such mapping
+<p align="center">
+  <img width="250" height="190" src="imgs/img_blog_3.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 Embeddings of translations and words with similar meaning are close (geometrically) in the shared  cross-lingual vector space. This property makes them very effective for cross-lingual Natural Language Processing (NLP) tasks.
 The simplest way to evaluate the result is the Bilingual Lexicon Induction (BLI) criterion, which designs the percentage of the dictionary that can be correctly induced. 
@@ -54,7 +83,9 @@ We will proceed as follows:  Sections ~\ref{sec:state_art} and ~\ref{sec:eval_mt
 
 In this section, we provide a brief overview of unsupervised bilingual alignment methods to learn a mapping between two sets of embeddings. The majority are divided into two stages: the actual alignment and lexicon induction, given the alignment. Even if the lexicon induction is often taken into account when aligning (directly or indirectly, through the loss function), this distinction is useful from a theoretical point of view. 
 
-![](imgs/alignement.png)
+<p align="center">
+  <img width="300" height="460" src="imgs/alignement.png">
+</p>
 
 <center>
 <em>
@@ -69,7 +100,16 @@ This approach, resulting from the supervised literature then allowed to presume 
 
 ##Orthogonal Procrustes Problem
 
-### add subtitles or schema
+<p align="center">
+  <img width="500" height="" src="imgs/img_blog_4.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 Procustes is a method that aligns points if given the correspondences between them (supervised scenario).
 ![\mathbf{X} \in \mathbb{R}^{n \times d}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathbf%7BX%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bn+%5Ctimes+d%7D) and ![\mathbf{Y} \in \mathbb{R}^{n \times d}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathbf%7BY%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bn+%5Ctimes+d%7D) are the two sets of word embeddings or points and we suppose, as previously said, that we know which point **X** corresponds to which point **Y**. This leads us to solve the following least-square problem of optimization, looking for the **W** matrix performing the alignment [[5]](https://arxiv.org/pdf/1805.11222.pdf):
@@ -77,6 +117,17 @@ Procustes is a method that aligns points if given the correspondences between th
 <p align="center">
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmin+_%7B%5Cmathbf%7BW%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7Bd+%5Ctimes+d%7D%7D%5C%7C%5Cmathbf%7BX%7D+%5Cmathbf%7BW%7D-%5Cmathbf%7BY%7D%5C%7C_%7B2%7D%5E%7B2%7D" />
 </p>
+
+<p align="center">
+  <img width="" height="" src="imgs/gif_blog_1.gif">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 We have access to a closed form solution with a cubic complexity. 
 Restraining **W** to the set of orthogonal matrices ![\mathcal{O}_{d}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathcal%7BO%7D_%7Bd%7D), improves the alignments for two reasons: it limits overfitting by reducing the size of the minimization space and allows to translate the idea of keeping distances and angles, resulting from the similarity in the space structure. The resulting problem is known as Orthogonal Procrustes and it also admits a closed form solution through a singular value decomposition (cubic complexity).
@@ -94,6 +145,10 @@ In a similar fashion, finding the correct mapping between two sets of word can b
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmin+_%7B%5Cmathbf%7BP%7D+%5Cin+%5Cmathcal%7BP%7D_%7Bn%7D%7D%5C%7C%5Cmathbf%7BX%7D-%5Cmathbf%7BP%7D+%5Cmathbf%7BY%7D%5C%7C_%7B2%7D%5E%7B2%7D" />
 </p>
 
+<p align="center">
+  <img width="" height="" src="imgs/gif_blog_2.gif">
+</p>
+
 ![\mathcal{P}_{n}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathcal%7BP%7D_%7Bn%7D) containing all the permutation matrices, the solution of the minimization, ![P_t
 ](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+P_t%0A) will be an alignment matrix giving away the pair of words. This 1 to 1 mapping can be achieved thanks to the Hungarian algorithm.
 It is equivalent to solve the following linear program: 
@@ -107,10 +162,16 @@ The combination of the Procustes- Wasserstein minimization problem is the follow
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmin+_%7B%5Cmathbf%7BQ%7D+%5Cin+%5Cmathcal%7BO%7D_%7Bd%7D%7D+%5Cmin+_%7B%5Cmathbf%7BP%7D+%5Cin+%5Cmathcal%7BP%7D_%7Bn%7D%7D%5C%7C%5Cmathbf%7BX+Q%7D-%5Cmathbf%7BP%7D+%5Cmathbf%7BY%7D%5C%7C_%7B2%7D%5E%7B2%7D" />
 </p>
 
+<p align="center">
+  <img width="" height="" src="imgs/gif_blog_3.gif">
+</p>
+
 In order to solve this problem, the approach of [[5]](https://arxiv.org/pdf/1805.11222.pdf) was to use a stochastic optimization algorithm. 
 As solving separately those 2 problems was leading to bad local optima, their choice was to select a smaller batch of size *b*, and perform their minimization algorithm on these sub-samples. The batch is playing the role of anchors points. Combining this with a convex relaxation for an optimal initialization, it leads to the following algorithm:
 
-![](imgs/algo_1.png)
+<p align="center">
+  <img width="300" height="360" src="imgs/algo_1.png">
+</p>
 
 ## Other unsupervised approaches
 
@@ -118,7 +179,16 @@ Other approaches exist but they are currently less efficient than the one descri
 
 **Optimal transport:**
 
-### schema to add
+<p align="center">
+  <img width="" height="190" src="imgs/img_blog_5.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 Optimal transport [[6]](https://people.math.gatech.edu/~gangbo/Cedric-Villani.pdf) formalizes the problem of finding a minimum cost mapping between two word embedding sets, viewed as discrete distributions. More precisely, they assume the following distributions:
 
@@ -132,7 +202,20 @@ and look for a transportation map realizing:
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cinf+_%7BT%7D%5Cleft%5C%7B%5Cint_%7B%5Cmathcal%7BX%7D%7D+c%28%5Cmathbf%7Bx%7D%2C+T%28%5Cmathbf%7Bx%7D%29%29+d+%5Cmu%28%5Cmathbf%7Bx%7D%29+%5C%3B+%5C%3B+%7C+%5C%3B+%5C%3B+T_%7B%5C%23%7D+%5Cmu%3D%5Cnu%5Cright%5C%7D" />
 </p>
 
-where the cost ![c(\mathbf{x}, T(\mathbf{x}))](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+c%28%5Cmathbf%7Bx%7D%2C+T%28%5Cmathbf%7Bx%7D%29%29) is typically just ![\| \mathbf{x}-\) \(T(\mathbf{x}) \|](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5C%7C+%5Cmathbf%7Bx%7D-%5C%29+%5C%28T%28%5Cmathbf%7Bx%7D%29+%5C%7C) and ![T_{\#} \mu=\nu](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+T_%7B%5C%23%7D+%5Cmu%3D%5Cnu) implies that the source points must exactly map to the targets. Yet, this transportation not always exist and a relaxation is used. Thus, the discrete optimal transport (DOT) problem consists of finding a plan ![\Gamma](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5CGamma) that solves
+where the cost ![c(\mathbf{x}, T(\mathbf{x}))](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+c%28%5Cmathbf%7Bx%7D%2C+T%28%5Cmathbf%7Bx%7D%29%29) is typically just ![\| \mathbf{x}-\) \(T(\mathbf{x}) \|](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5C%7C+%5Cmathbf%7Bx%7D-%5C%29+%5C%28T%28%5Cmathbf%7Bx%7D%29+%5C%7C) and ![T_{\#} \mu=\nu](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+T_%7B%5C%23%7D+%5Cmu%3D%5Cnu) implies that the source points must exactly map to the targets. 
+
+<p align="center">
+  <img width="300" height="300" src="imgs/img_blog_6.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
+
+Yet, this transportation not always exist and a relaxation is used. Thus, the discrete optimal transport (DOT) problem consists of finding a plan ![\Gamma](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5CGamma) that solves
 
 <p align="center">
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmin+_%7B%5CGamma+%5Cin+%5CPi%28%5Cmathbf%7Bp%7D%2C+%5Cmathbf%7Bq%7D%29%7D%5Clangle%5CGamma%2C+%5Cmathbf%7BC%7D%5Crangle" />
@@ -156,6 +239,11 @@ Some works [[7]](https://www.aclweb.org/anthology/D18-1214/) are  based on these
 
 **Adversarial Training:**
     Another popular alternative approach derived from the literature on generative adversarial network [[9]](https://arxiv.org/pdf/1406.2661.pdf) is to align point clouds without cross-lingual supervision by training a discriminator and a generator [[10]](https://arxiv.org/pdf/1710.04087.pdf). The discriminator aims at maximizing its ability to identify the origin of an embedding, and the generator of **W** aims at preventing the discriminator from doing so by making **WX** and **Y** as similar as possible.
+
+<p align="center">
+  <img width="" height="" src="imgs/gif_blog_4.gif">
+</p>
+
 They note ![\theta_{D} .](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Ctheta_%7BD%7D+.) the discriminator parameters and consider the probability ![P_{\theta_{D}}(\text { source }=1 | z)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+P_%7B%5Ctheta_%7BD%7D%7D%28%5Ctext+%7B+source+%7D%3D1+%7C+z%29) that a vector ![z](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+z) is the mapping of a source embedding (as opposed to a target embedding) according to the discriminator. 
 The discriminator loss can then be written as:
 
@@ -179,6 +267,17 @@ Thus, when it comes to aligning multiple languages together, two principle appro
 
 * Align all languages to one pivot language, often English, without taking into account for the loss function other alignments. This leads to low complexity but also to low efficiency between the very distinct language, forced to transit through English. 
 * Align all language pairs, by putting them all in the loss function, without giving importance to any one in particular. If this improves the efficiency of the algorithm, the counterpart is in the complexity, which is very important because it is quadratic in the number of languages.
+
+<p align="center">
+  <img width="" height="" src="imgs/img_blog_7.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 A trade-off must therefore be found between these two approaches.
 
@@ -209,7 +308,16 @@ At the beginning, we wanted to use this algorithm to incorporate exogenous knowl
 The core idea of the least-square problem of optimization in Wasserstein Procustes is to minimize the distance between a word and its translation. Hence, given the alignment, the inference part first just consisted in finding the nearest neighbors (NN). Yet, this criterion had a mayor issue:
 Nearest neighbors are by nature asymmetric: y being a K-NN of x does not imply that x is a K-NN of y. In high-dimensional spaces, this leads to a phenomenon that is detrimental to matching pairs based on a nearest neighbor rule: some vectors, called hubs, are with high probability nearest neighbors of many other points, while others (anti-hubs) are not nearest neighbors of any point. [[12]](https://arxiv.org/abs/1412.6568)
 
-### add example
+<p align="center">
+  <img width="250" height="190" src="imgs/img_blog_8.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 Two solutions to this problem have been brought through new criteria, aiming at giving similarity measure between two embeddings, thus allowing to match them appropriately. Among them, the most popular is Cross-Domain Similarity Local Scaling (CSLS) [[10]](https://arxiv.org/pdf/1710.04087.pdf). Other exist such as Inverted Softmax (ISF)[[13]](https://arxiv.org/pdf/1702.03859.pdf), yet they usually require to estimate noisy parameter in an unsupervised setting where we do not have a direct cross-validation criterion. 
 
@@ -219,7 +327,13 @@ The idea behind CSLS is quite simple: it is a matter of calculating a cosine sim
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+r_%7B%5Cmathrm%7BT%7D%7D%5Cleft%28W+x_%7Bs%7D%5Cright%29%3D%5Cfrac%7B1%7D%7BK%7D+%5Csum_%7By_%7Bt%7D+%5Cin+%5Cmathcal%7BN%7D_%7B%5Cmathrm%7BT%7D%7D%5Cleft%28W+x_%7Bs%7D%5Cright%29%7D+%5Ccos+%5Cleft%28W+x_%7Bs%7D%2C+y_%7Bt%7D%5Cright%29" />
 </p>
 
-where cos(...) is the cosine similarity. Likewise we denote by ![r_{\mathrm{S}}\left(y_{t}\right)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+r_%7B%5Cmathrm%7BS%7D%7D%5Cleft%28y_%7Bt%7D%5Cright%29) the mean similarity of a target word ![y_{t}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+y_%7Bt%7D) to its neighborhood. Finally, the CSLS is defined as:
+where cos(...) is the cosine similarity. 
+
+<p align="center">
+  <img width="" height="" src="imgs/gif_blog_5.gif">
+</p>
+
+Likewise we denote by ![r_{\mathrm{S}}\left(y_{t}\right)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+r_%7B%5Cmathrm%7BS%7D%7D%5Cleft%28y_%7Bt%7D%5Cright%29) the mean similarity of a target word ![y_{t}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+y_%7Bt%7D) to its neighborhood. Finally, the CSLS is defined as:
 
 <p align="center">
   <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Coperatorname%7BCSLS%7D%5Cleft%28W+x_%7Bs%7D%2C+y_%7Bt%7D%5Cright%29%3D2+%5Ccos+%5Cleft%28W+x_%7Bs%7D%2C+y_%7Bt%7D%5Cright%29-r_%7B%5Cmathrm%7BT%7D%7D%5Cleft%28W+x_%7Bs%7D%5Cright%29-r_%7B%5Cmathrm%7BS%7D%7D%5Cleft%28y_%7Bt%7D%5Cright%29" />
@@ -245,7 +359,16 @@ A ranking problem is defined as the task of ordering a set of items to maximize 
 
 Another exaple would be on any e-commerce website, where given a query "iphone black case" and the list of products available, the return list should be ordered by probability of getting purchased. With these examples, one can start understanding why a ranking problem is different than a classification or a regression task. While their goal is to predict a class or a value, the ranking task needs to order an entire list, such that, the higher you are the more relevant you should be.
 
-### add example 
+<p align="center">
+  <img width="400" height="300" src="imgs/img_blog_9.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 ## Theoretical framework
 
@@ -274,8 +397,6 @@ One first et very important note is how ![f](https://render.githubusercontent.co
 
 While the first option is simpler to implement, the second one is much closer to the reality, as the relevance of an item often depends on the distribution its in. For example, the relevance of a item on an e-commerce query will always depend on what the website offers you next to it.
 
-### add example
-
 We now have to define some metrics in order to judge how good a ranking is. We start by defining the *Discounted Cumulativ Gain* (DCG) of a list:
 
 <p align="center">
@@ -288,6 +409,17 @@ where:
 * ![\pi(j)](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cpi%28j%29) is the rank of the j-th item in X
 * ![\frac{1}{ln_{2}(1+\pi(j))}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cfrac%7B1%7D%7Bln_%7B2%7D%281%2B%5Cpi%28j%29%29%7D) is the discount factor
 * ![k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+k) is how much we want to go deep into the list. A low value of ![k](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+k) means that we want to focus on how well ranked the start of our list is.
+
+<p align="center">
+  <img width="450" height="300" src="imgs/img_blog_10.png">
+</p>
+
+<center>
+<em>
+Caption
+</em>
+</center>
+<br/>
 
 Most of the time however we want to compare this metric to the DCG obtained from the ground truth labels. We then define: 
 
