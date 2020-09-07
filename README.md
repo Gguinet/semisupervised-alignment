@@ -509,7 +509,68 @@ Finally, a final conceptual point is important to raise. In the context of the C
 
 We can split our results in two very distinct parts. They both depend on how the Learning to Rank item sets are built. Given a word, you can build the list of potential traduction from a CSLS criterion and then force or not the presence of the right traduction. This choice needs to be discussed thoroughly. First, let's quickly present some results with and without the right prediction forced in the query. 
 
-### to do
+## With forced prediction
+
+| Method                | EN\-ES                               | ES\-EN                               | EN\-FR                               | FR\-EN                               |
+|-----------------------|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|
+| Wass\. Proc\. \- NN   | 77\.2                                | 75\.6                                | 75\.0                                | 72\.1                                |
+| Wass\. Proc\. \- CSLS | 79\.8                                | 81\.8                                | 79\.8                                | 78\.0                                |
+| Wass\. Proc\. \- ISF  | 80\.2                                | 80\.3                                | 79\.6                                | 77\.2                                |
+| Adv\. \- NN           | 69\.8                                | 71\.3                                | 70\.4                                | 61\.9                                |
+| Adv\. \-CSLS          | 75\.7                                | 79\.7                                | 77\.8                                | 71\.2                                |
+| RCSLS\+spectral       | 83\.5                                | 85\.7                                | 82\.3                                | 84\.1                                |
+| RCSLS                 | 84\.1                                | 86\.3                                | 83\.3                                | 84\.1                                |
+| RUBI                  | **93.3** *(DE)* | **91.6** *(FR)* | **93.8** *(NL)* | **91\.9** *(IT)* |
+|                       | **EN\-DE**                               | **DE\-EN**                               | **EN\-RU**                               | **RU\-EN**                               |
+| Wass\. Proc\. \- NN   | 66\.0                                | 62\.9                                | 32\.6                                | 48\.6                                |
+| Wass\. Proc\. \- CSLS | 69\.4                                | 66\.4                                | 37\.5                                | 50\.3                                |
+| Wass\. Proc\. \- ISF  | 66\.9                                | 64\.2                                | 36\.9                                | 50\.3                                |
+| Adv\. \- NN           | 63\.1                                | 59\.6                                | 29\.1                                | 41\.5                                |
+| Adv\. \-CSLS          | 70\.1                                | 66\.4                                | 37\.2                                | 48\.1                                |
+| RCSLS\+spectral       | 78\.2                                | 75\.8                                | 56\.1                                | 66\.5                                |
+| RCSLS                 | 79\.1                                | 76\.3                                | 57\.9                                | 67\.2                                |
+| RUBI                  | **93\.6** *(HU)* | **89\.8** *(FR)* | **83\.7** *(HU)* | \-                                   |
+
+![](imgs/abl2.jpg)
+
+**1: Loss function impact** - Loss used for the Learning to Rank model. In other expriments, we found that ApproxNDCG and List MLE continue to perform similarly, hence our default choice of Approx NDCG. 
+**2: Group size impact** - The group size measures how many items the Learning to Rank model takes as input at the same time (multivariate vs. univariate). The dilemma is however to optimize the computation time because increasing the group size exponentially increases the number of calculations.
+**3: CSLS feature impact** - The features for the each potential translation in a query can incorporate several elements:
+
+  * the word embedding of the potential translation (size 300)
+  * the word embedding of the query (size 300)
+  * pre-computed features such a distance to query word in the aligned vector space, CSLS distance, ISF....
+
+Those features are crucial for the learning as it will fully rely on it. 
+At first, we decided to only use the word embedding of the potential translation and of the query. That gave us a 600 feature list. However, after several experiments, we noticed that the learning to rank algorithm, despite the variation of the parameters, was not able to learn relevant information from these 600 features, the performance was poor. The function learned through deep learning was less efficient than a simple Euclidean distance between the potential translation and the query (NN criterion). In fact, after consulting the literature, we realised that using such a number of features is not very common. Most algorithms were only using pre-computed features (often less than a hundred). Although this information is already interesting in itself, we therefore turned to the second approach. We chose to restrict ourselves to certain well-specified types of pre-computed features in order to evaluate their full impact. More precisely, for a fixed k parameter, we provided as features the euclidean distance to the query, as well as the CSLS(i) "distance" for i ranging from 1 to *k*. In other words, we provided information about the neighborhood through the penalties described in the section on CSLS. 
+
+Training with the full embeddings were also perform but did not lead to any improvements.
+
+**4: Query size impact** - Number of potential translations given with a query (number of items). There is a low incidence of the number of queries on the results, a very slight but perceptible decrease. The algorithm is therefore able, despite a large number of candidates, to discern the correct information.
+
+![](imgs/alb1.jpg)
+
+Plot of the BLI criterion in the training step according to the CSLS criterion, i.e. the quality of the alignment of the language used for learning with English. The trend that emerges is that of a very clear positive correlation (linear trend plotted in red, (**R** ^2 = 0.82)). We have also shown the averages per language family (Romance, Germanic and Uralic). In conclusion, it seems easier to learn using a language that is well aligned with English. Although this seems logical, it is not that obvious. Three clusters seem to appear in conjunction with the different families. Romance languages are associated with a high rate of alignment with English and therefore with high performance in the learning stage. 
+The Germanic language cluster has a lower performance combined with a slightly lower quality alignment. Knowing that English belongs to the Germanic language type, it is interesting to note this slight underperformance in alignment compared to Romance. Finally, the Slave cluster shows the worst performance in terms of alignment with English and therefore also the worst for the learning step. 
+
+## Without forced prediction
+
+![](imgs/abl3.jpg)
+
+<center>
+<em>
+Ablation study for the same pipeline as above, but without the right prediction forced into the query.
+</em>
+</center>
+<br/>
+
+Without going into too much details, the same trends as above appear here as well. The main difference is in pure BLI results: we only achieve the same results as the state of the art. 
+
+# Conclusion 
+
+If in the Learning to rank framework, a query without at least one relevant item doesn't have a lot of sense, this is not something one can ensure when working with unsupervised translation. If it is clear that given a query where the right translation appears, a Learning to Rank model surpasses existing methods, it is still unclear on how to achieve such query every time. While one way could be to extend drasticaly the query size, one still has to keep in mind the memory capability of such model. Another bias might come from every query where the right translation does not appear naturally (thus always giving a poor results to every model except "forced translation" model). 
+
+We do believe that leveraging knowledge of previous idioms acquisition can keep leading to many improvements over existing models. 
 
 
 # References
